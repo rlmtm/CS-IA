@@ -1,0 +1,139 @@
+.loginSep {
+    overflow-y: hidden;
+    width: 84.46%; /*83.333%   250px*/
+    margin-top: 10px;
+    /* margin-bottom: 10px; */
+}
+
+.w-fit {
+    width: 84.46%; /*83.333%*/
+}
+
+.loginButton {
+    height: 38px;
+    width: 84.46%; /*83.333%*/
+    border-radius: 5px;
+}
+
+.signButton {
+    margin-bottom: 5px;
+    Text-Decoration: None !important;
+}
+
+#line {
+    width: 40%; /*40%   100px*/
+    text-align: left;
+    height: 1.5px;
+    float: left;
+    color: black;
+}
+
+.logIn {
+    color: #1084e3;
+    border: 3px solid #1084e3;
+    background-color : transparent;
+    box-shadow: rgba(100, 100, 110, 0.4) 0px 7px 29px 0px;
+    border-radius: 10px;
+    font-size: 20px;
+    width: 110px;
+    height: 45px;
+}
+
+.logIn:hover {
+
+    color: #fff;
+    background-color: #1084e3;
+    border-radius: 10px;
+
+}
+
+.logOut {
+
+    color: #E1332D;
+    border: 3px solid #E1332D;
+    background-color : transparent;
+    box-shadow: rgba(100, 100, 110, 0.4) 0px 7px 29px 0px;
+    border-radius: 10px;
+    width: 110px;
+    height: 45px;
+}
+
+.logOut:hover {
+
+    color: #fff;
+    background-color: #E1332D;
+    border-radius: 10px;
+
+}
+
+nav {
+    /* box-shadow: rgba(100, 100, 110, 0.08) 0px 15px 0px 0px; */
+    box-shadow: 0px 1px 10px gray;
+}
+
+.nav-log {
+    font-size: 20px;
+    color: #000000;
+}
+
+.orDiv {
+    margin-top: 4px;
+    margin-left: 5.672%; /*5.672%*/
+    margin-right: 5.672%; /*5.672%   14.18px*/
+    width: 8.656%;  /*8.656%   16px*/
+    color: black;
+    float: left;
+}
+
+.or {
+    color:black;
+}
+
+#regBorder {
+    margin: auto!important;
+    border-width:2px;
+    border-style:solid;
+    border-color:black;
+    border-radius: 10px;
+    min-width: 300px;
+    max-width: 500px;
+    width: 40%;
+}
+
+#badEvent {
+    color: #E1332D;
+}
+
+#goodEvent {
+    color: #008000;
+}
+
+.msgSpace {
+    margin-top: 10px;
+ }
+
+.table {
+    width: 90%;
+    border-collapse: collapse;
+    border: 2px solid #ddd;
+}
+
+.horizontal-stack {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.horizontal-stack-w-home {
+    width: 86%;
+    max-width: 86%;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 2;
+    text-align: justify;
+}
+
+.buttonDisabled {
+    Cursor:text !important;
+    Text-Decoration: None !important;
+ }

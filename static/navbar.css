@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:700');
+
+.nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.nav li {
+    margin: 0 20px;
+    position: relative;
+}
+
+.nav a {
+    text-decoration: none;
+    display: block;
+    padding: 5px 0;
+    font-family: 'Open Sans';
+    font-size: 26px;
+    line-height: 1;
+    font-weight: bold;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    -webkit-background-clip: text;
+    background-image: linear-gradient(to right, #0b6cbd, #0b6cbd 80%, #fff 20%);
+    background-size: 200% 100%;
+    background-position: -100%;
+    transition: all 0.3s ease-in-out;
+}
+
+.nav a:before {
+    display: block;
+    content: '';
+    width: 0;
+    height: 3px;
+    bottom: 5px;
+    left: 0;
+    bottom: -3px;
+    z-index: 0;
+    position: absolute;
+    background: #0b6cbd;
+    transition: all 0.3s ease-in-out;
+}
+
+.nav a:hover {
+    background-position: 0%;
+}
+
+.nav a:hover:before {
+    width: 100%;
+}
+
+
+.nav .nav-item a.nav-link {
+    color: gray;
+    position: relative;
+}
+
+.nav .nav-item a.nav-link:before {
+    content: '';
+    width: 0;
+    height: 3px;
+    bottom: -3px;
+    left: 0;
+    position: absolute;
+    background: #0b6cbd;
+    transition: all 0.3s ease-in-out;
+}
+
+.nav .nav-item a.nav-link:hover:before {
+    width: 100%;
+}
+
+.nav .nav-item.active a.nav-link:before {
+    width: 100%;
+    background: #0b6cbd;
+}
