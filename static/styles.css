@@ -1,3 +1,8 @@
+nav .navbar-brand
+{
+    font-size: xx-large;
+}
+
 .loginSep {
     overflow-y: hidden;
     width: 84.46%; /*83.333%   250px*/
