@@ -34,6 +34,7 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+
 @app.before_request
 @before_first_request
 def before_request():
@@ -46,23 +47,6 @@ def before_request():
     clear_session(app)
 
     return
-
-
-@app.route("/")
-@login_required
-def home():
-    """Home Page"""
-
-    user_id = session["user_id"]
-    scrollable = False
-
-    if request.method == "POST":
-
-        return 1
-
-    else:
-
-        return render_template("home.html", scrollable=scrollable)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -101,11 +85,10 @@ def login():
 
         # Redirect user to home page
         print("success")
-        return redirect("/my")
+        return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-
         return render_template("login.html")
 
 
@@ -173,6 +156,41 @@ def register():
     else:
 
         return render_template("register.html")
+
+
+@app.route("/")
+@login_required
+def home():
+    """Home Page"""
+
+    user_id = session["user_id"]
+    scrollable = False
+
+    if request.method == "POST":
+
+        return 1
+
+    else:
+
+        return render_template("home.html", scrollable=scrollable)
+
+
+@app.route("/about")
+@login_required
+def about():
+    """About Page"""
+
+    user_id = session["user_id"]
+    scrollable = False
+
+    return render_template("about.html")
+
+@app.route("/menu")
+@login_required
+def menu():
+    """Sample Page"""
+
+    return render_template("menu.html")
 
 
 if __name__ == "__main__":
