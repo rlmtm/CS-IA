@@ -1,0 +1,179 @@
+import os.path
+import requests
+import sqlite3
+
+from cs50 import SQL
+from sqlite3 import Error
+from flask import Flask, flash, redirect, render_template, session, request, current_app, jsonify, url_for
+from flask_session import Session
+
+from werkzeug.security import check_password_hash, generate_password_hash
+from helpers import login_required, before_first_request, run_sql, check_for_sql, clear_session
+
+
+# From CS50 Module - (Configure application)
+app = Flask(__name__)
+
+
+# From CS50 Module - (Configure session to use filesystem (instead of signed cookies)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
+
+# From CS50 Module - (Configure CS50 Library to use SQLite database)
+db = SQL("sqlite:///storage.db")
+
+
+# From CS50 Module
+@app.after_request
+def after_request(response):
+    """Ensure responses aren't cached"""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
+
+@app.before_request
+@before_first_request
+def before_request():
+    """Clear Session"""
+
+    # Checks if college list is populated
+    check_for_sql(app)
+
+    # Calls function to redirect to login page only on app start
+    clear_session(app)
+
+    return
+
+
+@app.route("/")
+@login_required
+def home():
+    """Home Page"""
+
+    user_id = session["user_id"]
+    scrollable = False
+
+    if request.method == "POST":
+
+        return 1
+
+    else:
+
+        return render_template("home.html", scrollable=scrollable)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """Log user in"""
+
+    # Forget any user_id
+    session.clear()
+
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        # Variable for storing error message
+        error = None
+
+        # Ensure username was submitted
+        if not request.form.get("username"):
+            error = "Must provide username!"
+            return render_template("login.html", error=error)
+
+        # Ensure password was submitted
+        elif not request.form.get("password"):
+            error = "Must provide password!"
+            return render_template("login.html", error=error)
+
+        # Query database for username
+        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+
+        # Ensure username exists and password is correct
+        if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
+            error = "Invalid username and/or password!"
+            return render_template("login.html", error=error)
+
+        # Remember which user has logged in
+        session["user_id"] = rows[0]["id"]
+
+        # Redirect user to home page
+        print("success")
+        return redirect("/my")
+
+    # User reached route via GET (as by clicking a link or via redirect)
+    else:
+
+        return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    """Log user out"""
+
+    # Forget any user_id
+    session.clear()
+
+    # Redirect user to login form
+    return redirect("/login")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """Register user"""
+
+    if request.method == "POST":
+
+        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+
+        # Variable for storing error message
+        error = None
+
+        # Ensure username was submitted
+        if not request.form.get("username"):
+            error = "Must provide username!"
+            return render_template("register.html", error=error)
+
+        # Ensure username is unique
+        elif len(rows) != 0:
+            error = "Username not available!"
+            return render_template("register.html", error=error)
+
+        # Ensure password was submitted
+        elif not request.form.get("password"):
+            error = "Missing password!"
+            return render_template("register.html", error=error)
+
+        # Ensure passwords match
+        elif request.form.get("password") != request.form.get("confirmation"):
+            error = "Passwords don't match!"
+            return render_template("register.html", error=error)
+
+        elif len(request.form.get("password")) < 6 or len(request.form.get("password")) > 15:
+            error = "Password must be between 6 and 15 characters long!"
+            return render_template("register.html", error=error)
+
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        # Hashes password when before inserting into users table
+        hash = generate_password_hash(password, method='pbkdf2', salt_length=16)
+
+        db.execute("INSERT INTO USERS (username, hash) VALUES(?, ?)", username, hash)
+
+        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+
+        session["user_id"] = rows[0]["id"]
+
+        flash("Registered!")
+        return redirect("/")
+
+    else:
+
+        return render_template("register.html")
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
