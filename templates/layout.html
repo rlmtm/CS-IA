@@ -11,7 +11,7 @@
         <link href="https://getbootstrap.com/docs/5.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha256-6DTIqeOl68PUm0V8B+k/Ua65ZydP/VVYyzdR5+OoufY=" crossorigin="anonymous" />
         <script src="https://kit.fontawesome.com/85232d5313.js" crossorigin="anonymous"></script>
-        <link href="/static/favicon.png" rel="icon" type="image/x-icon">
+        <link href="https://cdn-icons-png.flaticon.com/512/5766/5766858.png" rel="icon" type="image/png">
         <link href="/static/styles.css" rel="stylesheet">
         <link href="/static/navbar.css" rel="stylesheet">
         <title>CS IA: {% block title %}{% endblock %}</title>
@@ -19,21 +19,24 @@
     <body>
         <nav class="bg-light border navbar navbar-expand-md navbar-light navPos">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/">
-                    <img src="/static/favicon.png" alt="" width="40" height="40" id="FooterLogo" class="d-inline-block align-text-top">
+                <a class="navbar-brand" href="/" style="margin-left: 5px;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/5766/5766858.png" alt="website logo" width="40" height="40" id="FooterLogo" class="d-inline-block align-text-top">
                     CS IA
                 </a>
                 {% if session["user_id"] %}
                     <ul class="nav navbar-nav">
                         <li class="nav-item {% if request.path == '/' %}active{% endif %}"><a disabled id="p1" class="nav-link" href="/#">Home</a></li>
-                        <li class="nav-item {% if request.path == '/menu_one' %}active{% endif %}"><a id="p2" class="nav-link" href="/my">Menu 1</a></li>
-                        <li class="nav-item {% if request.path == '/menu_two' %}active{% endif %}"><a id="p3" class="nav-link" href="/all">Menu 2</a></li>
-                        <li class="nav-item {% if request.path == '/menu_three' %}active{% endif %}"><a id="p4" class="nav-link" href="/ranking">Menu 3</a></li>
+                        <li class="nav-item {% if request.path == '/menu' %}active{% endif %}"><a id="p2" class="nav-link" href="/menu">Menu 1</a></li>
+                        <li class="nav-item {% if request.path == '/menu' %}active{% endif %}"><a id="p3" class="nav-link" href="/menu">Menu 2</a></li>
+                        <li class="nav-item {% if request.path == '/menu' %}active{% endif %}"><a id="p4" class="nav-link" href="/menu">Menu 3</a></li>
                         <li class="nav-item {% if request.path == '/about' %}active{% endif %}"><a id="p5" class="nav-link" href="/about">About</a></li>
                     </ul>
-                    <a class="nav-log" href="/logout">
+                    <!-- <a class="nav-log" href="/logout">
                         <button class="logOut">Log Out</button>
-                    </a>
+                    </a> -->
+                    <div class="profile-icon" style="margin-right: 10px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/6522/6522516.png" alt="" width="60" height="60" style="margin-top: -5px; margin-left: -5px">
+                    </div>
                 {% else %}
                     <a class="nav-log" href="/login">
                         <button class="logIn">Log In</button>
@@ -41,8 +44,7 @@
                 {% endif %}
             </div>
         </nav>
-        <main class="container-fluid py-5 text-center">
-            <div style="margin-bottom: 75px;"></div>
+        <main class="container-fluid container-padding text-center">
             {% block main %}{% endblock %}
         </main>
         {% if get_flashed_messages() %}
