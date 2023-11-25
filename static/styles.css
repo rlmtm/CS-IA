@@ -5,18 +5,17 @@ nav .navbar-brand
 
 .loginSep {
     overflow-y: hidden;
-    width: 84.46%; /*83.333%   250px*/
+    width: 84.46%;
     margin-top: 10px;
-    /* margin-bottom: 10px; */
 }
 
 .w-fit {
-    width: 84.46%; /*83.333%*/
+    width: 84.46%;
 }
 
 .loginButton {
     height: 38px;
-    width: 84.46%; /*83.333%*/
+    width: 84.46%;
     border-radius: 5px;
 }
 
@@ -26,7 +25,7 @@ nav .navbar-brand
 }
 
 #line {
-    width: 40%; /*40%   100px*/
+    width: 40%;
     text-align: left;
     height: 1.5px;
     float: left;
@@ -34,8 +33,8 @@ nav .navbar-brand
 }
 
 .logIn {
-    color: #1084e3;
-    border: 3px solid #1084e3;
+    color: #0bbd29;
+    border: 3px solid #0bbd29;
     background-color : transparent;
     box-shadow: rgba(100, 100, 110, 0.4) 0px 7px 29px 0px;
     border-radius: 10px;
@@ -56,7 +55,7 @@ nav .navbar-brand
 
     color: #E1332D;
     border: 3px solid #E1332D;
-    background-color : transparent;
+    background-color: transparent;
     box-shadow: rgba(100, 100, 110, 0.4) 0px 7px 29px 0px;
     border-radius: 10px;
     width: 110px;
@@ -72,7 +71,6 @@ nav .navbar-brand
 }
 
 nav {
-    /* box-shadow: rgba(100, 100, 110, 0.08) 0px 15px 0px 0px; */
     box-shadow: 0px 1px 10px gray;
 }
 
@@ -83,9 +81,9 @@ nav {
 
 .orDiv {
     margin-top: 4px;
-    margin-left: 5.672%; /*5.672%*/
-    margin-right: 5.672%; /*5.672%   14.18px*/
-    width: 8.656%;  /*8.656%   16px*/
+    margin-left: 5.672%;
+    margin-right: 5.672%;
+    width: 8.656%;
     color: black;
     float: left;
 }
@@ -138,7 +136,53 @@ nav {
     text-align: justify;
 }
 
+.horizontal-stack-w-text {
+    width: 86%;
+    max-width: 86%;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 2;
+    text-align: justify;
+}
+
 .buttonDisabled {
     Cursor:text !important;
     Text-Decoration: None !important;
  }
+
+ .table-center {
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.table {
+    width: 90%;
+    border-collapse: collapse;
+    border: 2px solid #ddd;
+}
+
+.container-padding {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.profile-icon {
+    border-radius: 30px;
+    width: 50px;
+    height: 50px;
+    border: 0px solid black;
+    background: #0bbd29;
+    /* color: white;
+    background-color: white; */
+}
+ß
+.profile-icon:hover {
+    border-radius: 30px;
+    width: 60px;
+    height: 60px;
+    border: 0px solid #0bbd29;
+    /* color: white;
+    background-color: white; */
+}
