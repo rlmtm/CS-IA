@@ -63,8 +63,8 @@ nav {
     border-style:solid;
     border-color:black;
     border-radius: 10px;
-    min-width: 300px;
-    max-width: 500px;
+    min-width: 350px;
+    max-width: 600px;
     width: 40%;
     background: white;
 }
@@ -164,4 +164,15 @@ nav {
         border-color: #0bbd29;
         box-shadow: 0 0 7.5px rgba(11, 189, 41, 0.5);
     }
+}
+
+.g_id_signin {
+    width: 84.46%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 16px;
+}
+
+.g_id_signin iframe {
+    width: 84.46%;
 }
