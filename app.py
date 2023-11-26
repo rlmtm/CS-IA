@@ -8,7 +8,10 @@ from flask import Flask, flash, redirect, render_template, session, request, cur
 from flask_session import Session
 
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import login_required, before_first_request, run_sql, check_for_sql, clear_session
+from helpers import login_required, before_first_request, run_sql, check_for_sql, clear_session, generate_password
+
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 
 # From CS50 Module - (Configure application)
@@ -63,8 +66,8 @@ def login():
         error = None
 
         # Ensure username was submitted
-        if not request.form.get("username"):
-            error = "Must provide username!"
+        if not request.form.get("user"):
+            error = "Must provide email or username!"
             return render_template("login.html", error=error)
 
         # Ensure password was submitted
@@ -73,7 +76,7 @@ def login():
             return render_template("login.html", error=error)
 
         # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+        rows = db.execute("SELECT * FROM users WHERE username = ? OR email = ?", request.form.get("user"), request.form.get("user"))
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
@@ -179,6 +182,8 @@ def home():
     user_id = session["user_id"]
     scrollable = False
 
+    print(user_id)
+
     if request.method == "POST":
 
         return 1
@@ -214,6 +219,78 @@ def settings():
     user_id = session["user_id"]
 
     return render_template("settings.html")
+
+
+# @app.route('/google-signin', methods=['POST'])
+# def google_signin():
+#     id_token_received = request.form['id_token']
+
+#     try:
+#         # Verify the id_token
+#         idinfo = id_token.verify_oauth2_token(id_token_received, requests.Request(), YOUR_CLIENT_ID)
+
+#         # Extract user information
+#         user_id = idinfo['sub']
+#         user_name = idinfo['name']
+#         user_email = idinfo['email']
+
+#         # Use the user information as needed
+
+#         return jsonify(success=True, user_id=user_id, user_name=user_name, user_email=user_email)
+
+#     except ValueError:
+#         return jsonify(success=False, error='Invalid token')
+
+
+@app.route('/google-signin', methods=['POST'])
+def google_signin():
+
+    YOUR_CLIENT_ID = '434447398181-dte88c2s0pdun9rl3h5k942v6tgtj7ue.apps.googleusercontent.com'
+
+    id_token_received = request.form['id_token']
+
+    try:
+        # Verify the id_token
+        idinfo = id_token.verify_oauth2_token(id_token_received, requests.Request(), YOUR_CLIENT_ID)
+
+        # Extract user information
+        user_id = idinfo['sub']
+        user_name = idinfo['name']
+        user_email = idinfo['email']
+
+        email_count = db.execute("SELECT COUNT(email) FROM users WHERE email = ?", user_email)
+        email_count = email_count[0]["COUNT(email)"]
+
+        if email_count != 1:
+
+            email = user_email
+            username = user_name
+            password = generate_password(12)
+            hash = generate_password_hash(password, method='pbkdf2', salt_length=16)
+
+            db.execute("INSERT INTO USERS (email, username, hash) VALUES(?, ?, ?)", email, username, hash)
+
+            rows = db.execute("SELECT * FROM users WHERE email = ?", email)
+
+            print("rows - ", rows)
+
+            session["user_id"] = rows[0]["id"]
+
+        
+        else:
+
+            email = user_email
+
+            rows = db.execute("SELECT * FROM users WHERE email = ?", email)
+
+            session["user_id"] = rows[0]["id"]
+
+        return jsonify(success=True)
+
+    except ValueError:
+        print('Invalid token')
+        return jsonify(success=False, error='Invalid token')
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
