@@ -1,7 +1,3 @@
-nav .navbar-brand
-{
-    font-size: xx-large;
-}
 
 .loginSep {
     overflow-y: hidden;
@@ -22,6 +18,13 @@ nav .navbar-brand
 .signButton {
     margin-bottom: 5px;
     Text-Decoration: None !important;
+    color: #0bbd29;
+}
+
+.signButton:hover {
+    margin-bottom: 5px;
+    Text-Decoration: None !important;
+    color: #0bbd29;
 }
 
 #line {
@@ -30,44 +33,6 @@ nav .navbar-brand
     height: 1.5px;
     float: left;
     color: black;
-}
-
-.logIn {
-    color: #0bbd29;
-    border: 3px solid #0bbd29;
-    background-color : transparent;
-    box-shadow: rgba(100, 100, 110, 0.4) 0px 7px 29px 0px;
-    border-radius: 10px;
-    font-size: 20px;
-    width: 110px;
-    height: 45px;
-}
-
-.logIn:hover {
-
-    color: #fff;
-    background-color: #1084e3;
-    border-radius: 10px;
-
-}
-
-.logOut {
-
-    color: #E1332D;
-    border: 3px solid #E1332D;
-    background-color: transparent;
-    box-shadow: rgba(100, 100, 110, 0.4) 0px 7px 29px 0px;
-    border-radius: 10px;
-    width: 110px;
-    height: 45px;
-}
-
-.logOut:hover {
-
-    color: #fff;
-    background-color: #E1332D;
-    border-radius: 10px;
-
 }
 
 nav {
@@ -101,6 +66,7 @@ nav {
     min-width: 300px;
     max-width: 500px;
     width: 40%;
+    background: white;
 }
 
 #badEvent {
@@ -146,11 +112,11 @@ nav {
 }
 
 .buttonDisabled {
-    Cursor:text !important;
+    /* Cursor:text !important; */
     Text-Decoration: None !important;
- }
+}
 
- .table-center {
+.table-center {
     overflow: auto;
     display: flex;
     justify-content: center;
@@ -168,21 +134,34 @@ nav {
     padding-bottom: 1.5rem;
 }
 
-.profile-icon {
-    border-radius: 30px;
-    width: 50px;
-    height: 50px;
-    border: 0px solid black;
-    background: #0bbd29;
-    /* color: white;
-    background-color: white; */
+
+.btn-primary {
+    background-color: #0bbd29;
+    border-color: #0bbd29;
 }
-ß
-.profile-icon:hover {
-    border-radius: 30px;
-    width: 60px;
-    height: 60px;
-    border: 0px solid #0bbd29;
-    /* color: white;
-    background-color: white; */
+
+.btn-primary:hover {
+    background-color: #0c8520;
+    border-color: #0c8520;
+}
+
+
+
+#confirmation {
+    display: none;
+}
+
+.horizontal-stack-flash {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-control {
+    box-shadow: 0 0 0px rgba(11, 189, 41, 0.5);
+    transition: border-color .3s ease-in-out, box-shadow .3s ease-in-out;
+    &:focus {
+        border-color: #0bbd29;
+        box-shadow: 0 0 7.5px rgba(11, 189, 41, 0.5);
+    }
 }
