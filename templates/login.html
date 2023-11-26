@@ -16,7 +16,10 @@
             <div class="mb-3">
                 <input class="form-control mx-auto w-fit" id="password" name="password" placeholder="Password" type="password">
             </div>
-            <button class="fbtn btn-primary mx-auto loginButton" type="submit">Log In</button>
+            {% if error %}
+                <a id="badEvent">{{error}}</a>
+            {% endif %}
+            <button class="fbtn btn-primary mx-auto loginButton msgSpace" type="submit">Log In</button>
             <div class="loginSep mx-auto">
                 <hr id="line">
                 <div class="orDiv">
