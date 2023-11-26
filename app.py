@@ -180,17 +180,20 @@ def home():
     """Home Page"""
 
     user_id = session["user_id"]
-    scrollable = False
+    user = db.execute("SELECT * FROM users WHERE id = ?;", user_id)[0]
 
-    print(user_id)
+    return render_template("home.html", user=user)
 
-    if request.method == "POST":
 
-        return 1
+@app.route("/menu")
+@login_required
+def menu():
+    """Sample Page"""
 
-    else:
+    user_id = session["user_id"]
+    user = db.execute("SELECT * FROM users WHERE id = ?;", user_id)[0]
 
-        return render_template("home.html", scrollable=scrollable)
+    return render_template("menu.html", user=user)
 
 
 @app.route("/about")
@@ -199,16 +202,9 @@ def about():
     """About Page"""
 
     user_id = session["user_id"]
-    scrollable = False
+    user = db.execute("SELECT * FROM users WHERE id = ?;", user_id)[0]
 
-    return render_template("about.html")
-
-@app.route("/menu")
-@login_required
-def menu():
-    """Sample Page"""
-
-    return render_template("menu.html")
+    return render_template("about.html",  user=user)
 
 
 @app.route("/settings")
@@ -219,27 +215,6 @@ def settings():
     user_id = session["user_id"]
 
     return render_template("settings.html")
-
-
-# @app.route('/google-signin', methods=['POST'])
-# def google_signin():
-#     id_token_received = request.form['id_token']
-
-#     try:
-#         # Verify the id_token
-#         idinfo = id_token.verify_oauth2_token(id_token_received, requests.Request(), YOUR_CLIENT_ID)
-
-#         # Extract user information
-#         user_id = idinfo['sub']
-#         user_name = idinfo['name']
-#         user_email = idinfo['email']
-
-#         # Use the user information as needed
-
-#         return jsonify(success=True, user_id=user_id, user_name=user_name, user_email=user_email)
-
-#     except ValueError:
-#         return jsonify(success=False, error='Invalid token')
 
 
 @app.route('/google-signin', methods=['POST'])
@@ -258,7 +233,7 @@ def google_signin():
         user_name = idinfo['name']
         user_email = idinfo['email']
 
-        email_count = db.execute("SELECT COUNT(email) FROM users WHERE email = ?", user_email)
+        email_count = db.execute("SELECT COUNT(email) FROM users WHERE email = ?;", user_email)
         email_count = email_count[0]["COUNT(email)"]
 
         if email_count != 1:
@@ -268,7 +243,7 @@ def google_signin():
             password = generate_password(12)
             hash = generate_password_hash(password, method='pbkdf2', salt_length=16)
 
-            db.execute("INSERT INTO USERS (email, username, hash) VALUES(?, ?, ?)", email, username, hash)
+            db.execute("INSERT INTO USERS (email, username, hash) VALUES(?, ?, ?);", email, username, hash)
 
             rows = db.execute("SELECT * FROM users WHERE email = ?", email)
 
@@ -281,7 +256,7 @@ def google_signin():
 
             email = user_email
 
-            rows = db.execute("SELECT * FROM users WHERE email = ?", email)
+            rows = db.execute("SELECT * FROM users WHERE email = ?;", email)
 
             session["user_id"] = rows[0]["id"]
 
