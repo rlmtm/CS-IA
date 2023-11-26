@@ -11,10 +11,10 @@
         <br>
         <form action="/register" method="post">
             <div class="mb-3">
-                <input autocomplete="off" autofocus class="form-control mx-auto w-fit" id="username" name="username" placeholder="Set Username..." type="text">
+                <input class="form-control mx-auto w-fit" id="email" name="email" placeholder="Set Email..." type="email">
             </div>
             <div class="mb-3">
-                <input class="form-control mx-auto w-fit" id="email" name="email" placeholder="Set Email..." type="email">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-fit" id="username" name="username" placeholder="Set Username..." type="text">
             </div>
             <div class="mb-3">
                 <input class="form-control mx-auto w-fit" id="password" name="password" placeholder="Set Password..." type="password">
@@ -29,5 +29,17 @@
         </form>
         <br>
     </div>
+    <script>
+        password.addEventListener('input', function () {
+            // const selectedTerm = this.value;
+            showConfirmation()
+        });
+
+        function showConfirmation() {
+            var confirmation = document.getElementById('confirmation');
+
+            confirmation.style.display = "block";
+        }
+    </script>
 {% endblock %}
 
