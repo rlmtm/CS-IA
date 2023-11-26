@@ -62,6 +62,8 @@ def check_for_sql(app):
 
         run_sql('framework.sql')
 
+        return
+
         app.config["BEFORE_CHECK_EXECUTED"] = True
 
 
