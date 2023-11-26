@@ -53,7 +53,7 @@ def before_request():
 def login():
     """Log user in"""
 
-    # Forget any user_id
+    # Clear any user_id
     session.clear()
 
     # User reached route via POST (as by submitting a form via POST)
@@ -92,35 +92,35 @@ def login():
         return render_template("login.html")
 
 
-@app.route("/logout")
-def logout():
-    """Log user out"""
-
-    # Forget any user_id
-    session.clear()
-
-    # Redirect user to login form
-    return redirect("/login")
-
-
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
 
     if request.method == "POST":
 
-        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+        existing_email = db.execute("SELECT * FROM users WHERE email = ?", request.form.get("email"))
+        existing_username = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
 
         # Variable for storing error message
         error = None
 
-        # Ensure username was submitted
-        if not request.form.get("username"):
+        # Ensure email was submitted
+        if not request.form.get("email"):
+            error = "Must provide email!"
+            return render_template("register.html", error=error)
+        
+        # Ensure email is not already registered to an account
+        elif len(existing_email) != 0:
+            error = "Account already exists with specified email!"
+            return render_template("register.html", error=error)
+
+        # Ensure username is provided
+        elif not request.form.get("username"):
             error = "Must provide username!"
             return render_template("register.html", error=error)
 
         # Ensure username is unique
-        elif len(rows) != 0:
+        elif len(existing_username) != 0:
             error = "Username not available!"
             return render_template("register.html", error=error)
 
@@ -134,17 +134,19 @@ def register():
             error = "Passwords don't match!"
             return render_template("register.html", error=error)
 
-        elif len(request.form.get("password")) < 6 or len(request.form.get("password")) > 15:
-            error = "Password must be between 6 and 15 characters long!"
+        # Ensure password is between 4 and 15 characters
+        elif len(request.form.get("password")) < 4 or len(request.form.get("password")) > 15:
+            error = "Password must be between 4 and 15 characters long!"
             return render_template("register.html", error=error)
 
+        email = request.form.get("email")
         username = request.form.get("username")
         password = request.form.get("password")
 
         # Hashes password when before inserting into users table
         hash = generate_password_hash(password, method='pbkdf2', salt_length=16)
 
-        db.execute("INSERT INTO USERS (username, hash) VALUES(?, ?)", username, hash)
+        db.execute("INSERT INTO USERS (email, username, hash) VALUES(?, ?, ?)", email, username, hash)
 
         rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
 
@@ -156,6 +158,17 @@ def register():
     else:
 
         return render_template("register.html")
+
+
+@app.route("/logout")
+def logout():
+    """Log user out"""
+
+    # Forget any user_id
+    session.clear()
+
+    # Redirect user to login form
+    return redirect("/login")
 
 
 @app.route("/")
@@ -192,6 +205,15 @@ def menu():
 
     return render_template("menu.html")
 
+
+@app.route("/settings")
+@login_required
+def settings():
+    """Settings Page"""
+
+    user_id = session["user_id"]
+
+    return render_template("settings.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
