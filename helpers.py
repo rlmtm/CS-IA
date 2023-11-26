@@ -1,12 +1,17 @@
 import os
 import requests
+import secrets
+import string
 
 from cs50 import SQL
 from functools import wraps
-from flask import redirect, render_template, session, request, current_app
+from flask import redirect, render_template, session, request, current_app, jsonify
 
 import os.path
 from sqlite3 import Error
+
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 def login_required(f):
     """Decorate routes to require login"""
@@ -79,3 +84,10 @@ def clear_session(app):
             return redirect("/login")
 
         app.config["BEFORE_REQUEST_EXECUTED"] = True
+
+
+def generate_password(length):
+    characters = string.ascii_letters + string.digits + string.punctuation
+    password = ''.join(secrets.choice(characters) for _ in range(length))
+    return password
+
