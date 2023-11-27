@@ -28,6 +28,7 @@
     z-index: 1;
     text-align: center;
     -webkit-background-clip: text;
+    background-clip: text;
     background-image: linear-gradient(to right, #0bbd29, #0bbd29 80%, #fff 20%);
     background-size: 200% 100%;
     background-position: -100%;
