@@ -154,7 +154,7 @@ def register():
         # Hashes password when before inserting into users table
         hash = generate_password_hash(new_password, method='pbkdf2', salt_length=16)
 
-        db.execute("INSERT INTO USERS (email, username, hash) VALUES(?, ?, ?)", new_email, new_username, hash)
+        db.execute("INSERT INTO USERS (email, username, hash, auto_generated) VALUES(?, ?, ?, ?)", new_email, new_username, hash, False)
 
         rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
 
@@ -220,18 +220,33 @@ def settings():
     user_id = session["user_id"]
     user = db.execute("SELECT * FROM users WHERE id = ?;", user_id)[0]
 
+    generated = user['auto_generated']
+
+    print("generated", generated)
+
     if request.method == "POST":
+
+        # confirmation = request.json['displayProperty']
+        # print("confirmation python: ", confirmation)
 
         error = None
         success = None
 
         new_username = request.form.get("username")
         new_email = request.form.get("email")
+       
+        if generated:
+            set_password = request.form.get("set-password")
+        else:
+            new_password = request.form.get("new-password")
+            current_password = request.form.get("current-password")
 
         print(user['id'], new_username, new_email)
 
         existing_usernames = db.execute("SELECT * FROM users WHERE username = ? AND NOT id = ?", new_username, user['id'])
         existing_emails = db.execute("SELECT * FROM users WHERE email = ? AND NOT id = ?", new_email, user['id'])
+
+        hash = db.execute("SELECT hash FROM users WHERE id = ?", user['id'])[0]['hash']
 
         if not new_username or not new_email:
             error = "Must fill all fields!"
@@ -245,29 +260,59 @@ def settings():
             error = "Account already exists for specified email!"
             return render_template("settings.html",  user=user, error=error)
 
-        elif new_username == user['username'] and new_email == user['email']:
-            error = "Account Details have not changed!"
-            return render_template("settings.html",  user=user, error=error)
-
         elif valid_email(new_email) == False:
             error = "Invalid email provided!"
             return render_template("settings.html",  user=user, error=error)
 
+        elif generated:
+
+            if len(set_password) < 4 or len(set_password) > 15:
+                error = "Password must be between 4 and 15 characters long!"
+                return render_template("settings.html",  user=user, error=error)
+
+        elif not generated:
+
+            if not check_password_hash(hash, current_password):
+                error = "Current password incorrect!"
+                return render_template("settings.html",  user=user, error=error)
+
+            elif len(new_password) < 4 or len(new_password) > 15:
+                error = "Password must be between 4 and 15 characters long!"
+                return render_template("settings.html",  user=user, error=error)
+
+            elif new_username == user['username'] and new_email == user['email'] and check_password_hash(hash, new_password):
+                error = "Account Details have not changed!"
+                print("all")
+                return render_template("settings.html",  user=user, error=error)
 
         if new_username == user['username'] and new_email != user['email']:
-            success = "Email succesfully updated!"
             db.execute("UPDATE users SET email = ? WHERE id = ?;", new_email, user['id'])
+            success = "Email succesfully updated!"
             return render_template("settings.html",  user=user, success=success)
         
         elif new_username != user['username'] and new_email == user['email']:
-            success = "Username succesfully updated!"
             db.execute("UPDATE users SET username = ? WHERE id = ?;", new_username, user['id'])
+            success = "Username succesfully updated!"
             return render_template("settings.html",  user=user, success=success)
+
+        elif generated:
+            hash = generate_password_hash(set_password, method='pbkdf2', salt_length=16)
+            db.execute("UPDATE users SET hash = ?;", hash)
+            db.execute("UPDATE users SET auto_generated = ?;", False)
+            success = "Password succesfully set!"
+            return render_template("settings.html",  user=user, success=success)
+
+        elif not generated:
+
+            if new_username != current_password and check_password_hash(hash, current_password):
+                hash = generate_password_hash(new_password, method='pbkdf2', salt_length=16)
+                db.execute("UPDATE users SET hash = ?;", hash)
+                success = "Password succesfully updated!"
+                return render_template("settings.html",  user=user, success=success)
 
         return render_template("settings.html",  user=user)
 
-
-    return render_template("settings.html",  user=user)
+    return render_template("settings.html",  user=user, generated=generated)
 
 
 @app.route('/google-signin', methods=['POST'])
@@ -297,7 +342,7 @@ def google_signin():
             password = generate_password(12)
             hash = generate_password_hash(password, method='pbkdf2', salt_length=16)
 
-            db.execute("INSERT INTO USERS (email, username, hash) VALUES(?, ?, ?);", email, username, hash)
+            db.execute("INSERT INTO USERS (email, username, hash, auto_generated) VALUES(?, ?, ?, ?);", email, username, hash, True)
 
             rows = db.execute("SELECT * FROM users WHERE email = ?", email)
 
@@ -319,6 +364,15 @@ def google_signin():
         print('Invalid token')
         return jsonify(success=False, error='Invalid token')
     
+
+@app.route('/get_styling', methods=['POST'])
+def get_styling():
+
+    confirmation = request.json['displayProperty']
+    print("confirmation python: ", confirmation)
+
+    return jsonify(confirmation)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="3000", debug=True)
