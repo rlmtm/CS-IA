@@ -8,7 +8,7 @@ from flask import Flask, flash, redirect, render_template, session, request, cur
 from flask_session import Session
 
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import login_required, before_first_request, run_sql, check_for_sql, clear_session, generate_password
+from helpers import login_required, before_first_request, run_sql, check_for_sql, clear_session, generate_password, valid_email
 
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -101,14 +101,19 @@ def register():
 
     if request.method == "POST":
 
-        existing_email = db.execute("SELECT * FROM users WHERE email = ?", request.form.get("email"))
-        existing_username = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+        new_email = request.form.get("email")
+        new_username = request.form.get("username")
+        new_password = request.form.get("password")
+        new_confirmation = request.form.get("confirmation")
+
+        existing_email = db.execute("SELECT * FROM users WHERE email = ?", new_email)
+        existing_username = db.execute("SELECT * FROM users WHERE username = ?", new_username)
 
         # Variable for storing error message
         error = None
 
         # Ensure email was submitted
-        if not request.form.get("email"):
+        if not new_email:
             error = "Must provide email!"
             return render_template("register.html", error=error)
         
@@ -116,9 +121,13 @@ def register():
         elif len(existing_email) != 0:
             error = "Account already exists with specified email!"
             return render_template("register.html", error=error)
+        
+        elif valid_email(new_email) == False:
+            error = "Invalid email provided!"
+            return render_template("register.html", error=error)
 
         # Ensure username is provided
-        elif not request.form.get("username"):
+        elif not new_username:
             error = "Must provide username!"
             return render_template("register.html", error=error)
 
@@ -128,28 +137,24 @@ def register():
             return render_template("register.html", error=error)
 
         # Ensure password was submitted
-        elif not request.form.get("password"):
+        elif not new_password:
             error = "Missing password!"
             return render_template("register.html", error=error)
 
         # Ensure passwords match
-        elif request.form.get("password") != request.form.get("confirmation"):
+        elif new_password != new_confirmation:
             error = "Passwords don't match!"
             return render_template("register.html", error=error)
 
         # Ensure password is between 4 and 15 characters
-        elif len(request.form.get("password")) < 4 or len(request.form.get("password")) > 15:
+        elif len(new_password) < 4 or len(new_password) > 15:
             error = "Password must be between 4 and 15 characters long!"
             return render_template("register.html", error=error)
 
-        email = request.form.get("email")
-        username = request.form.get("username")
-        password = request.form.get("password")
-
         # Hashes password when before inserting into users table
-        hash = generate_password_hash(password, method='pbkdf2', salt_length=16)
+        hash = generate_password_hash(new_password, method='pbkdf2', salt_length=16)
 
-        db.execute("INSERT INTO USERS (email, username, hash) VALUES(?, ?, ?)", email, username, hash)
+        db.execute("INSERT INTO USERS (email, username, hash) VALUES(?, ?, ?)", new_email, new_username, hash)
 
         rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
 
@@ -207,14 +212,62 @@ def about():
     return render_template("about.html",  user=user)
 
 
-@app.route("/settings")
+@app.route("/settings", methods=["GET", "POST"] )
 @login_required
 def settings():
     """Settings Page"""
 
     user_id = session["user_id"]
+    user = db.execute("SELECT * FROM users WHERE id = ?;", user_id)[0]
 
-    return render_template("settings.html")
+    if request.method == "POST":
+
+        error = None
+        success = None
+
+        new_username = request.form.get("username")
+        new_email = request.form.get("email")
+
+        print(user['id'], new_username, new_email)
+
+        existing_usernames = db.execute("SELECT * FROM users WHERE username = ? AND NOT id = ?", new_username, user['id'])
+        existing_emails = db.execute("SELECT * FROM users WHERE email = ? AND NOT id = ?", new_email, user['id'])
+
+        if not new_username or not new_email:
+            error = "Must fill all fields!"
+            return render_template("settings.html",  user=user, error=error)
+        
+        elif len(existing_usernames) != 0:
+            error = "Username already taken!"
+            return render_template("settings.html",  user=user, error=error)
+
+        elif len(existing_emails) != 0:
+            error = "Account already exists for specified email!"
+            return render_template("settings.html",  user=user, error=error)
+
+        elif new_username == user['username'] and new_email == user['email']:
+            error = "Account Details have not changed!"
+            return render_template("settings.html",  user=user, error=error)
+
+        elif valid_email(new_email) == False:
+            error = "Invalid email provided!"
+            return render_template("settings.html",  user=user, error=error)
+
+
+        if new_username == user['username'] and new_email != user['email']:
+            success = "Email succesfully updated!"
+            db.execute("UPDATE users SET email = ? WHERE id = ?;", new_email, user['id'])
+            return render_template("settings.html",  user=user, success=success)
+        
+        elif new_username != user['username'] and new_email == user['email']:
+            success = "Username succesfully updated!"
+            db.execute("UPDATE users SET username = ? WHERE id = ?;", new_username, user['id'])
+            return render_template("settings.html",  user=user, success=success)
+
+        return render_template("settings.html",  user=user)
+
+
+    return render_template("settings.html",  user=user)
 
 
 @app.route('/google-signin', methods=['POST'])
@@ -233,6 +286,7 @@ def google_signin():
         user_name = idinfo['name']
         user_email = idinfo['email']
 
+        # Search for users with email
         email_count = db.execute("SELECT COUNT(email) FROM users WHERE email = ?;", user_email)
         email_count = email_count[0]["COUNT(email)"]
 
@@ -251,7 +305,6 @@ def google_signin():
 
             session["user_id"] = rows[0]["id"]
 
-        
         else:
 
             email = user_email
