@@ -162,9 +162,15 @@ nav {
     border-color: #129a29;
 }
 
-
-
 #confirmation {
+    display: none;
+}
+
+/* #new-password {
+    display: none;
+} */
+
+#change-password {
     display: none;
 }
 
