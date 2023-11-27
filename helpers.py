@@ -2,6 +2,7 @@ import os
 import requests
 import secrets
 import string
+import re
 
 from cs50 import SQL
 from functools import wraps
@@ -91,3 +92,7 @@ def generate_password(length):
     password = ''.join(secrets.choice(characters) for _ in range(length))
     return password
 
+
+def valid_email(email):
+    emailRegex = r"^[^\s@]+@[^\s@]+\.[^\s@]+$"
+    return re.match(emailRegex, email) is not None
