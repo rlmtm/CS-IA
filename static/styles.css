@@ -9,9 +9,19 @@
     width: 84.46%;
 }
 
+.w-fit-s {
+    width:50%;
+}
+
 .loginButton {
     height: 38px;
     width: 84.46%;
+    border-radius: 5px;
+}
+
+.settingsButton {
+    height: 38px;
+    width: 90.5%;
     border-radius: 5px;
 }
 
@@ -71,10 +81,12 @@ nav {
 
 #badEvent {
     color: #E1332D;
+    width: 100%;
 }
 
 #goodEvent {
     color: #008000;
+    width: 100%;
 }
 
 .msgSpace {
@@ -91,6 +103,11 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.centered {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .horizontal-stack-w-home {
@@ -141,8 +158,8 @@ nav {
 }
 
 .btn-primary:hover {
-    background-color: #0c8520;
-    border-color: #0c8520;
+    background-color: #129a29;
+    border-color: #129a29;
 }
 
 
@@ -175,4 +192,30 @@ nav {
 
 .g_id_signin iframe {
     width: 84.46%;
+}
+
+
+.edit-button {
+    margin-left: 12.5px;
+    margin-right: 5px;
+    margin-top: 7.5px;
+}
+
+.edit-text {
+    font-size: 19px;
+    color: white;
+    margin-right: 12.5px;
+    height: 30px;
+}
+.edit-text:hover {
+    font-size: 19px;
+    color: white;
+    margin-right: 12.5px;
+    height: 30px;
+}
+
+.horizontal-stack-inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
