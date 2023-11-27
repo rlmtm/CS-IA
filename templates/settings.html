@@ -7,5 +7,59 @@
 {% block main %}
     <h1>Settings</h1>
     <br>
-    <a></a>
+    <form action="/settings" method="post" class="centered" style="width: 80%;">
+        <div class="w-fit horizontal-stack centered" style="width: 90%; padding-bottom: 50px;">
+            <h2 style="width: 25%; left: 0; text-align: left!important;">Email: </h2>
+            <input autocomplete="off" autofocus disabled class="form-control mx-auto w-fit-s" id="email" name="email" value="{{ user['email'] }}" type="text">
+            <button class="fbtn btn-primary loginButton" type="button" onclick="edit('email')" style="margin-left: 20px; width: 10%;">
+                <div class="horizontal-stack-inner">
+                    <i class="fas fa-edit edit-icon edit-button" style="width: 25px; height: 25px;"></i>
+                    <a class="edit-text button-style buttonDisabled">Edit</a>
+                </div>
+            </button>
+        </div>
+        <div class="w-fit horizontal-stack centered" style="width: 90%; padding-bottom: 50px;">
+            <h2 style="width: 25%; text-align: left!important;">Username: </h2>
+            <input autocomplete="off" autofocus disabled class="form-control mx-auto w-fit-s" id="username" name="username" value="{{ user['username'] }}" type="text">
+            <button class="fbtn btn-primary loginButton" type="button" onclick="edit('username')" style="margin-left: 20px; width: 10%;">
+                <div class="horizontal-stack-inner">
+                    <i class="fas fa-edit edit-icon edit-button" style="width: 25px; height: 25px;"></i>
+                    <a class="edit-text button-style buttonDisabled">Edit</a>
+                </div>
+            </button>
+        </div>
+        <div class="w-fit horizontal-stack centered" style="width: 90%; padding-bottom: 15px;">
+            <h2 style="width: 25%; text-align: left!important;">Password: </h2>
+            <input autocomplete="off" autofocus disabled class="form-control mx-auto w-fit-s" id="password" name="password" value="{{ user['hash'] }}" type="password">
+            <button class="fbtn btn-primary loginButton" type="button" onclick="show()" style="margin-left: 20px; width: 10%;">
+                <div class="horizontal-stack-inner">
+                    <i class="fa-solid fa-eye edit-icon edit-button" style="width: 25px; height: 25px;""></i>
+                    <a class="edit-text button-style buttonDisabled">Show</a>
+                </div>
+            </button>
+        </div>
+        {% if error %}
+            <a id="badEvent">{{error}}</a>
+        {% endif %}
+        {% if success %}
+            <a id="goodEvent">{{success}}</a>
+        {% endif %}
+        <button class="fbtn btn-primary mx-auto settingsButton msgSpace centered" type="submit" onclick="showAll()">Save</button>
+    </form>
+    <script>
+        function show() {
+            var input = document.getElementById("password");
+            input.type = (input.type === "text") ? "password" : "text";
+        }
+
+        function showAll() {
+            document.getElementById("username").disabled = false;
+            document.getElementById("email").disabled = false;
+        }
+
+        function edit(input) {
+            var element = document.getElementById(input);
+            element.disabled = !element.disabled;
+        }
+    </script>
 {% endblock %}
