@@ -101,9 +101,9 @@ def valid_email(email):
     return re.match(emailRegex, email) is not None
 
 
-# def speech_to_text():
+def speech_to_text():
 
-#     OPENAI_API_KEY = "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"
+#     OPENAI_API_KEY = OPENAI_API_KEY
 
 #     client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -125,3 +125,5 @@ def valid_email(email):
 #     )
 
 #     print(completion.choices[0].message)
+
+    return 1
