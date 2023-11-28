@@ -103,27 +103,29 @@ def valid_email(email):
 
 def speech_to_text():
 
-#     OPENAI_API_KEY = OPENAI_API_KEY
-
-#     client = OpenAI(api_key=OPENAI_API_KEY)
-
-#     # audio_file= open("./static/audio_test.mp3", "rb")
-#     # transcript = client.audio.transcriptions.create(
-#     #     model="whisper-1", 
-#     #     file=audio_file,
-#     #     response_format="text"
-#     # )
-
-#     # return transcript
-
-#     completion = client.chat.completions.create(
-#     model="gpt-3.5-turbo",
-#     messages=[
-#         {"role": "system", "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
-#         {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
-#     ]
-#     )
-
-#     print(completion.choices[0].message)
-
     return 1
+
+# OPENAI_API_KEY = ""
+
+# client = OpenAI(api_key=OPENAI_API_KEY)
+
+# # audio_file= open("./static/audio_test.mp3", "rb")
+# # transcript = client.audio.transcriptions.create(
+# #     model="whisper-1", 
+# #     file=audio_file,
+# #     response_format="text"
+# # )
+
+# # return transcript
+
+# completion = client.chat.completions.create(
+# model="gpt-3.5-turbo",
+# messages=[
+#     {"role": "system", "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
+#     {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
+# ]
+# )
+
+# print(completion.choices[0].message)
+
+    
