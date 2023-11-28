@@ -76,7 +76,7 @@
             {% block main %}{% endblock %}
         </main>
         {% if get_flashed_messages() %}
-            <div class="horizontal-stack-flash" style="margin-top: -10px;">
+            <div class="horizontal-stack-flash" style="margin-top: -10px; width: 100%;">
                 <div class="alert alert-primary mb-0 text-center horizontal-stack-center" role="alert" style="margin-top: -10px;">
                     {{ get_flashed_messages() | join(" ") }}
                 </div>
