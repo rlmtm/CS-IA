@@ -4,6 +4,9 @@ import secrets
 import string
 import re
 
+from openai import OpenAI
+from pathlib import Path
+
 from cs50 import SQL
 from functools import wraps
 from flask import redirect, render_template, session, request, current_app, jsonify
@@ -96,3 +99,29 @@ def generate_password(length):
 def valid_email(email):
     emailRegex = r"^[^\s@]+@[^\s@]+\.[^\s@]+$"
     return re.match(emailRegex, email) is not None
+
+
+# def speech_to_text():
+
+#     OPENAI_API_KEY = "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"
+
+#     client = OpenAI(api_key=OPENAI_API_KEY)
+
+#     # audio_file= open("./static/audio_test.mp3", "rb")
+#     # transcript = client.audio.transcriptions.create(
+#     #     model="whisper-1", 
+#     #     file=audio_file,
+#     #     response_format="text"
+#     # )
+
+#     # return transcript
+
+#     completion = client.chat.completions.create(
+#     model="gpt-3.5-turbo",
+#     messages=[
+#         {"role": "system", "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
+#         {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
+#     ]
+#     )
+
+#     print(completion.choices[0].message)
