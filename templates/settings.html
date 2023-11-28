@@ -32,7 +32,7 @@
             <div class="w-fit horizontal-stack centered" style="width: 90%; padding-bottom: 15px;">
                 <h2 style="width: 25%; text-align: left!important;">Password: </h2>
                 <input autocomplete="off" autofocus class="form-control mx-auto w-fit-s" id="set-password" name="set-password" placeholder="Set Password" type="password">
-                <button class="fbtn btn-primary loginButton" type="button" onclick="show()" style="margin-left: 20px; width: 10%;">
+                <button class="fbtn btn-primary loginButton" type="button" onclick="show('set-password')" style="margin-left: 20px; width: 10%;">
                     <div class="horizontal-stack-inner">
                         <i class="fa-solid fa-eye edit-icon edit-button" style="width: 25px; height: 25px;"></i>
                         <a class="edit-text button-style buttonDisabled">Show</a>
@@ -53,25 +53,15 @@
             <div class="w-fit horizontal-stack centered" id="change-password" style="width: 90%; padding-bottom: 15px;">
                 <h2 style="width: 25%; text-align: left!important;"> </h2>
                 <input autocomplete="off" autofocus class="form-control mx-auto w-fit-s" id="new-password" name="new-password" placeholder="New Password" type="password">
-                <button class="btn-primary loginButton" type="button" onclick="show()" style="margin-left: 20px; width: 10%;">
+                <button class="btn-primary loginButton" type="button" onclick="show('new-password')" style="margin-left: 20px; width: 10%;">
                     <div class="horizontal-stack-inner">
                         <i class="fa-solid fa-eye edit-icon edit-button" style="width: 25px; height: 25px;"></i>
                         <a class="edit-text button-style buttonDisabled">Show</a>
                     </div>
                 </button>
             </div>
-            <input disabled id="display" name="display" type="text" value="flex" style="display: none; height: 0px;">
+            <input id="display" name="display" type="text" value="flex" style="display: none;">
         {% endif %}
-        <!-- <div class="w-fit horizontal-stack centered" style="width: 90%; padding-bottom: 15px;">
-            <h2 style="width: 25%; text-align: left!important;">Password: </h2>
-            <input autocomplete="off" autofocus disabled class="form-control mx-auto w-fit-s" id="password" name="password" value="{{ user['hash'] }}" type="password">
-            <button class="fbtn btn-primary loginButton" type="button" onclick="show()" style="margin-left: 20px; width: 10%;">
-                <div class="horizontal-stack-inner">
-                    <i class="fa-solid fa-eye edit-icon edit-button" style="width: 25px; height: 25px;""></i>
-                    <a class="edit-text button-style buttonDisabled">Show</a>
-                </div>
-            </button>
-        </div> -->
         {% if error %}
             <a id="badEvent">{{error}}</a>
         {% endif %}
@@ -81,38 +71,24 @@
         <button class="fbtn btn-primary mx-auto settingsButton msgSpace centered" type="submit" onclick="showAll()">Save</button>
     </form>
     <script>
-        function show() {
-            var input = document.getElementById("password");
-            input.type = (input.type === "text") ? "password" : "text";
+        function show(input) {
+            var element = document.getElementById(input);
+            element.type = (element.type === "text") ? "password" : "text";
         }
 
         function showAll() {
             document.getElementById("username").disabled = false;
             document.getElementById("email").disabled = false;
-            // var current_password = document.getElementById("current-password")
-            // if (current_password.value = "") {
 
-            // }
-            var confirmation = document.getElementById('change-password');
-            var displayProperty = confirmation.style.display
+            var extraElement = document.getElementById('change-password')
+            var extraElementValue = window.getComputedStyle(extraElement).getPropertyValue('display');
 
-            console.log(editPassword())
+            console.log("extraElementValue", extraElementValue)
 
-            var display = document.getElementById("display")
-            var displayValue = display.value
+            var displayElement = document.getElementById('display')
+            displayElement.value = extraElementValue
 
-            console.log(displayValue)
-
-            // var confirmation = document.getElementById('change-password');
-            // var displayProperty = confirmation.style.display
-            
-            // fetch('/settings', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify({ displayProperty }),
-            // })
+            console.log("displayElementValue", displayElement.value)
         }
 
         function edit(input) {
@@ -123,24 +99,6 @@
         function editPassword() {
             var confirmation = document.getElementById('change-password');
             confirmation.style.display = (confirmation.style.display === "none") ? "flex" : "none";
-            
-            var displayProperty = confirmation.style.display
-
-            return displayProperty
-            // console.log("displayProperty", displayProperty)
-
-            // fetch('/settings', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify({ displayProperty }),
-            // })
-            // .then(response => response.json())
-            // .then(results => {
-            //     console.log("results", results)
-            //     return results
-            // });
         }
     </script>
 {% endblock %}
