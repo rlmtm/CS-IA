@@ -8,10 +8,13 @@ from flask import Flask, flash, redirect, render_template, session, request, cur
 from flask_session import Session
 
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import login_required, before_first_request, run_sql, check_for_sql, clear_session, generate_password, valid_email
+from helpers import login_required, before_first_request, run_sql, check_for_sql, clear_session, generate_password, valid_email, speech_to_text
 
 from google.oauth2 import id_token
 from google.auth.transport import requests
+
+from openai import OpenAI
+
 
 
 # From CS50 Module - (Configure application)
@@ -122,6 +125,7 @@ def register():
             error = "Account already exists with specified email!"
             return render_template("register.html", error=error)
         
+        # Ensure follows the correct format
         elif valid_email(new_email) == False:
             error = "Invalid email provided!"
             return render_template("register.html", error=error)
@@ -198,7 +202,13 @@ def menu():
     user_id = session["user_id"]
     user = db.execute("SELECT * FROM users WHERE id = ?;", user_id)[0]
 
-    return render_template("menu.html", user=user)
+    sessions = db.execute("SELECT * FROM session WHERE user_id = ? ORDER BY title ASC", user_id)
+
+    sessions = [session for session in sessions]
+
+
+
+    return render_template("menu.html", user=user, sessions=sessions)
 
 
 @app.route("/about")
@@ -226,14 +236,14 @@ def settings():
 
     if request.method == "POST":
 
-        # confirmation = request.json['displayProperty']
-        # print("confirmation python: ", confirmation)
-
         error = None
         success = None
 
         new_username = request.form.get("username")
         new_email = request.form.get("email")
+        display = request.form.get("display")
+
+        print(display)
        
         if generated:
             set_password = request.form.get("set-password")
@@ -272,43 +282,78 @@ def settings():
 
         elif not generated:
 
-            if not check_password_hash(hash, current_password):
+            if not current_password:
+                error = "Current password not provided!"
+                return render_template("settings.html",  user=user, error=error)
+            
+            elif not check_password_hash(hash, current_password):
                 error = "Current password incorrect!"
                 return render_template("settings.html",  user=user, error=error)
 
-            elif len(new_password) < 4 or len(new_password) > 15:
-                error = "Password must be between 4 and 15 characters long!"
-                return render_template("settings.html",  user=user, error=error)
+            # elif len(new_password) < 4 or len(new_password) > 15 and display == "flex":
+            #     error = "Password must be between 4 and 15 characters long!"
+            #     return render_template("settings.html",  user=user, error=error)
 
-            elif new_username == user['username'] and new_email == user['email'] and check_password_hash(hash, new_password):
-                error = "Account Details have not changed!"
-                print("all")
-                return render_template("settings.html",  user=user, error=error)
+            elif display == "flex":
 
-        if new_username == user['username'] and new_email != user['email']:
-            db.execute("UPDATE users SET email = ? WHERE id = ?;", new_email, user['id'])
-            success = "Email succesfully updated!"
-            return render_template("settings.html",  user=user, success=success)
-        
-        elif new_username != user['username'] and new_email == user['email']:
-            db.execute("UPDATE users SET username = ? WHERE id = ?;", new_username, user['id'])
-            success = "Username succesfully updated!"
-            return render_template("settings.html",  user=user, success=success)
+                if new_username == user['username'] and new_email == user['email'] and check_password_hash(hash, current_password) and (not new_password or new_password == current_password):
+                    error = "Account Details have not changed!"
+                    print("all")
+                    return render_template("settings.html",  user=user, error=error)
+                
+                elif not new_password:
+                    error = "New password not set!"
+                    return render_template("settings.html",  user=user, error=error)
+                
+                elif len(new_password) < 4 or len(new_password) > 15:
+                    error = "New password must be between 4 and 15 characters long!"
+                    return render_template("settings.html",  user=user, error=error)
 
-        elif generated:
-            hash = generate_password_hash(set_password, method='pbkdf2', salt_length=16)
-            db.execute("UPDATE users SET hash = ?;", hash)
-            db.execute("UPDATE users SET auto_generated = ?;", False)
-            success = "Password succesfully set!"
-            return render_template("settings.html",  user=user, success=success)
+        if generated:
+
+            if new_username == user['username'] and new_email != user['email']:
+                db.execute("UPDATE users SET email = ? WHERE id = ?;", new_email, user['id'])
+                success = "Email succesfully updated!"
+                return render_template("settings.html",  user=user, success=success)
+            
+            elif new_username != user['username'] and new_email == user['email']:
+                db.execute("UPDATE users SET username = ? WHERE id = ?;", new_username, user['id'])
+                success = "Username succesfully updated!"
+                return render_template("settings.html",  user=user, success=success)
+            
+            else:
+                hash = generate_password_hash(set_password, method='pbkdf2', salt_length=16)
+                db.execute("UPDATE users SET hash = ?;", hash)
+                db.execute("UPDATE users SET auto_generated = ?;", False)
+                success = "Password succesfully set!"
+                return render_template("settings.html",  user=user, success=success)
 
         elif not generated:
 
-            if new_username != current_password and check_password_hash(hash, current_password):
+            if new_username == user['username'] and new_email != user['email'] and check_password_hash(hash, current_password) and display == "none":
+                db.execute("UPDATE users SET email = ? WHERE id = ?;", new_email, user['id'])
+                success = "Email succesfully updated!"
+                return render_template("settings.html",  user=user, success=success)
+            
+            elif new_username != user['username'] and new_email == user['email'] and check_password_hash(hash, current_password) and display == "none":
+                db.execute("UPDATE users SET username = ? WHERE id = ?;", new_username, user['id'])
+                success = "Username succesfully updated!"
+                return render_template("settings.html",  user=user, success=success)
+            
+            elif new_username != user['username'] and new_email != user['email'] and check_password_hash(hash, current_password) and display == "none":
+                db.execute("UPDATE users SET username = ?, email = ? WHERE id = ?;", new_username, new_email, user['id'])
+                success = "Email & Username succesfully updated!"
+                return render_template("settings.html",  user=user, success=success)
+            
+            elif new_username == user['username'] and new_email == user['email'] and new_password != current_password and check_password_hash(hash, current_password) and new_password and display == "flex":
                 hash = generate_password_hash(new_password, method='pbkdf2', salt_length=16)
                 db.execute("UPDATE users SET hash = ?;", hash)
                 success = "Password succesfully updated!"
                 return render_template("settings.html",  user=user, success=success)
+            
+            else:
+                error = "Password must be updated alone!"
+                return render_template("settings.html",  user=user, error=error)
 
         return render_template("settings.html",  user=user)
 
@@ -375,4 +420,4 @@ def get_styling():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="3000", debug=True)
+    app.run(host="0.0.0.0", port="5000", debug=True)
