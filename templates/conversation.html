@@ -10,20 +10,15 @@
     <div class="horizontal-stack-w-tex">
         <a>Welcome to the speaking practice. Press the button below to start recording and click again to end the recording. Please wait for a response to start recording again.</a>
     </div>
-    
     <div style="display: flex; flex-direction: column;">
         <button class="fbtn btn-primary mx-auto msgSpace actionButton" type="submit" style="margin-top: 200px" id="actionButton">
             <img id="recordImage" src="https://cdn-icons-png.flaticon.com/512/26/26312.png" height="100px" width="100px">
         </button>
-    
-        <!-- <button id="actionButton">Record</button> -->
         <audio style="display: none;" id="audioElement" controls></audio>
-        
         <button class="fbtn btn-secondary mx-auto msgSpace endButton" type="submit" style="margin-top: 50px" id="endButton">
             End
         </button>
     </div>
-
     <script>
         var convo_id = "{{ convo_id }}";
         let counter = 2
@@ -47,13 +42,11 @@
                 audioElement.src = URL.createObjectURL(audioBlob);
                 audioChunks = [];
 
-                // Change the image back to the original after stopping recording
                 document.getElementById('recordImage').src = "https://cdn-icons-png.flaticon.com/512/26/26312.png";
 
                 const formData = new FormData();
                 formData.append('audio', audioBlob, `user_${counter}.wav`);
 
-                // Send the audio file to the Python backend
                 fetch('/file', {
                     method: 'POST',
                     body: formData,
@@ -77,13 +70,13 @@
 
                             mediaRecorder.start();
                             isRecording = true;
-                            // Change the image to the recording image
+
                             document.getElementById('recordImage').src = "https://static.thenounproject.com/png/1461154-200.png";
 
                             actionButton.addEventListener('click', () => {
                                 mediaRecorder.stop();
                                 isRecording = false;
-                                // Change the image back to the original after stopping recording
+
                                 document.getElementById('recordImage').src = "https://cdn-icons-png.flaticon.com/512/26/26312.png";
                             });
                         })
@@ -92,7 +85,6 @@
                         });
                 }
             });
-
             endButton.addEventListener('click', function () {
 
                 fetch('/end', {
