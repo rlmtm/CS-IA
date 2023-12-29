@@ -1,4 +1,4 @@
-# CS-IA
+# CS-IA (Fluent Flow)
 
 TODOS:
 1. Give report of transcript with grammar mistakes and ways to improve
