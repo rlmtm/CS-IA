@@ -5,7 +5,28 @@
 {% endblock %}
 
 {% block main %}
-    <h1>Create conversation</h1>
+    <div class="horizontal-stack horizontal-stack-w-new">
+        <button class="fbtn btn-primary menu-button button-style" onclick="back()">
+            <div class="horizontal-stack-inner">
+                <span onclick="open_select(this)" class="icon_select_mate" data-n-select="0" style="transform: rotate(90deg);">
+                    <svg fill="#fff" height="30" viewBox="0 0 24 24" width="30" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z"></path>
+                        <path d="M0-.75h24v24H0z" fill="none"></path>
+                    </svg>
+                </span>
+                <a class="button-style" style="margin-right: 12.5px;">Back</a>
+            </div>
+        </button>
+        <div class="horizontal-stack-center">
+            <h1>Create conversation</h1>
+        </div>
+        <button class="fbtn btn-primary menu-button button-style" onclick="edit()" style="visibility: hidden;">
+            <div class="horizontal-stack-inner">
+                <i class="fas fa-edit menu-button-icon"></i>
+                <a class="menu-button-text button-style">Edit</a>
+            </div>
+        </button>
+    </div>
     <br>
     <div class="horizontal-stack-w-tex">
         <a>Please select the topic and language of discussion.</a>
@@ -18,12 +39,19 @@
         <br>
         <select class="form-contro mx-auto w-fit" id="languageSelect" name="languageSelect">
             <option disabled selected value="select" style="width: 100%;">--Select Language--</option>
+            <option value="Arabic">Arabic</option>
+            <option value="Bengali">Bengali</option>
+            <option value="Chinese">Chinese</option>
             <option value="English">English</option>
-            <option value="German">German</option>
             <option value="French">French</option>
-            <option value="Spanish">Spanish</option>
+            <option value="German">German</option>
+            <option value="Hindi">Hindi</option>
             <option value="Italian">Italian</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Portugese">Portugese</option>
             <option value="Russian">Russian</option>
+            <option value="Spanish">Spanish</option>
+            <option value="Urdu">Urdu</option>
         </select>
         <br>
         {% if error %}
@@ -34,6 +62,8 @@
     </form>
 
     <script>
-
+        function back() {
+            window.location.pathname = "/";
+        }
     </script>
 {% endblock %}
