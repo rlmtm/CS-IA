@@ -5,14 +5,110 @@
 {% endblock %}
 
 {% block main %}
-    <!-- Explain the website, how to use it and the ranking system, how it is created, add images -->
-    <h1>Home</h1>
-    <br>
-    <div class="horizontal-stack-w-tex">
-        <a>Welcome</a>
+    <div class="horizontal-stack horizontal-stack-w-menu">
+        <button class="fbtn btn-primary menu-button button-style" onclick="add()">
+            <div class="horizontal-stack-inner">
+                <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" class="menu-button-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="3">
+                    <line x1="8" y1="0" x2="8" y2="16"></line>
+                    <line x1="0" y1="8" x2="16" y2="8"></line>
+                </svg>
+                <a class="menu-button-text button-style">New</a>
+            </div>
+        </button>
+        <div class="horizontal-stack-center">
+            <h1 class="remove">Dashboard</h1>
+        </div>
+        <button class="fbtn btn-primary menu-button button-style" onclick="edit()">
+            <div class="horizontal-stack-inner">
+                <i class="fas fa-edit menu-button-icon"></i>
+                <a class="menu-button-text button-style">Edit</a>
+            </div>
+        </button>
     </div>
-
+    <div class="table-top" style="height: 49px; overflow-y: hidden; margin-bottom: 20px;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="width: 84.78px">Title</th>
+                    <th style="width: 101.21px;">Language</th>
+                    <th style="width: 186.58px;">Date</th>
+                    <th style="width: 77.27px;">Length</th>
+                    <th style="width: 341.52px;">Recording</th>
+                    <th style="width: 105.04px;">Transcript</th>
+                    <th class="edit-column-title" style="width: 100px; display: none;">Delete</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="table-center" style="height: 486px; overflow-y: auto; padding-right: 10px; margin-right: -10px">
+        <table class="table">
+            <tbody class="table-body">
+                {% for conversation in conversations %}
+                    <tr>
+                        <td style="width: 84.78px"> {{ conversation["topic"] | capitalize }} </td>
+                        <td style="width: 101.21px;"> {{ conversation["language"] }} </td>
+                        <td style="width: 186.58px;"> {{ conversation["date"] }} </td>
+                        <td style="width: 77.27px;"> {{ conversation["length"] }} </td>
+                        <td style="width: 341.52px;">
+                            <audio controls>
+                                <source src="{{ url_for('access_files', convo_id=conversation['convo_id'], filename='recording.mp3') }}" type="audio/mp3">
+                            </audio>
+                        </td>
+                        <td style="width: 105.04px;">
+                            <a href="{{ url_for('access_files', convo_id=conversation['convo_id'], filename='transcript.txt') }}" download="transcript.txt">
+                                <button class="fbtn btn-primary mx-auto actionButton" id="recordButton" style="width: 54px; height: 54px;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/724/724933.png" alt="Download Transcript Button" width="30px" height="30px">
+                                </button>
+                            </a>
+                        </td>
+                        <td class="edit-column-data" style="width: 100px; display: none;">
+                            <button class="fbtn btn-danger mx-auto actionButton" onclick="removeConversation('{{ conversation["convo_id"] }}')" style="width: 54px; height: 54px;">
+                                <i class="fas fa-trash-alt" width="30px" height="30px"></i>
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <script>
-  
+        function add() {
+            location.href = window.location.href.substring(0, window.location.href.lastIndexOf('/'))+"/new";
+        }
+        function toggleEdit() {
+            var editColumnDataList = document.querySelectorAll('.edit-column-data');
+            var editColumnTitleList = document.querySelectorAll('.edit-column-title');
+
+            editColumnDataList.forEach(function (editColumnData) {
+                editColumnData.style.display = editColumnData.style.display === 'none' ? 'table-cell' : 'none';
+            });
+
+            editColumnTitleList.forEach(function (editColumnTitle) {
+                editColumnTitle.style.display = editColumnTitle.style.display === 'none' ? 'table-cell' : 'none';
+            });
+        }
+        function edit() {
+            toggleEdit();
+        }
+        function removeConversation(convo_id) {
+            fetch('/remove', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    convo_id: convo_id
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response:', data);
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error in POST request:', error);
+            });
+            console.log('Removing conversation with ID:', convo_id);
+        }
     </script>
 {% endblock %}
