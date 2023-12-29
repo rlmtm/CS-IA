@@ -1,20 +1,21 @@
 import os.path
 import requests
 import sqlite3
+import ffmpeg
+from iso639 import Lang
+from pydub import AudioSegment
+from datetime import datetime
 
 from cs50 import SQL
 from sqlite3 import Error
-from flask import Flask, flash, redirect, render_template, session, request, current_app, jsonify, url_for
+from flask import Flask, flash, redirect, render_template, session, request, current_app, jsonify, url_for, send_from_directory
 from flask_session import Session
 
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import login_required, before_first_request, run_sql, check_for_sql, clear_session, generate_password, valid_email, speech_to_text
+from helpers import login_required, before_first_request, run_sql, check_for_sql, clear_session, generate_password, valid_email, create_folder, count_files, play_audio, wav_to_mp3, count_files_with_word, chatGPT_answer, speech_to_text, total_audio_duration, merge_audio_files, clear_recordings, create_transcript, remove_folder, create_deleted_file
 
 from google.oauth2 import id_token
 from google.auth.transport import requests
-
-from openai import OpenAI
-
 
 
 # From CS50 Module - (Configure application)
@@ -186,29 +187,182 @@ def logout():
 @app.route("/")
 @login_required
 def home():
-    """Home Page"""
+    """Main Page"""
 
     user_id = session["user_id"]
     user = db.execute("SELECT * FROM users WHERE id = ?;", user_id)[0]
 
-    return render_template("home.html", user=user)
+    conversations = db.execute("SELECT * FROM conversations WHERE user_id = ? ORDER BY date DESC", user_id)
+
+    conversations = [conversation for conversation in conversations]
+
+    return render_template("home.html", user=user, conversations=conversations)
 
 
-@app.route("/menu")
+@app.route("/new", methods=["GET", "POST"])
 @login_required
-def menu():
-    """Sample Page"""
+def new():
+    """Create conversation Page"""
 
     user_id = session["user_id"]
     user = db.execute("SELECT * FROM users WHERE id = ?;", user_id)[0]
 
-    sessions = db.execute("SELECT * FROM session WHERE user_id = ? ORDER BY title ASC", user_id)
+    if request.method == "POST":
 
-    sessions = [session for session in sessions]
+        error = None
+
+        topic = request.form.get("topicInput")
+        language = request.form.get("languageSelect")
+
+        if not topic and not language:
+            error = "Must fill all fields!"
+            return render_template("new.html",  user=user, error=error)
+
+        elif language == None:
+            error = "Must fill all fields!"
+            return render_template("new.html",  user=user, error=error)
+
+        current_datetime = datetime.now()
+
+        db.execute("INSERT INTO conversations (user_id, topic, language, date, length) VALUES(?, ?, ?, ?, ?);", user_id, topic, Lang(language).pt1, current_datetime, 0)
+
+        convo_id = db.execute("SELECT convo_id FROM conversations WHERE date = ?", current_datetime)
+
+        session['convo_id'] = convo_id
+
+        return redirect("/conversation")
+
+    return render_template("new.html",  user=user)
 
 
+@app.route("/remove", methods=["POST"])
+@login_required
+def remove():
 
-    return render_template("menu.html", user=user, sessions=sessions)
+    data = request.get_json()
+    convo_id = data.get('convo_id')
+
+    db.execute("DELETE FROM conversations WHERE convo_id = ?;", convo_id)
+
+    folder_path = './audio_recordings/conversation_'+str(convo_id)+'/'
+
+    remove_folder(folder_path)
+    os.mkdir(folder_path)
+
+    create_deleted_file(convo_id)
+
+    flash("Conversation Removed!")
+
+    return jsonify({'status': 'success', 'message': 'Conversation removed successfully'})
+
+
+@app.route("/conversation", methods=["GET", "POST"])
+@login_required
+def conversation():
+    """Conversation Page"""
+
+    user_id = session["user_id"]
+    user = db.execute("SELECT * FROM users WHERE id = ?;", user_id)[0]
+
+    convo_id = session['convo_id'][0]['convo_id']
+
+    create_folder(convo_id)
+
+    file_num_sys = count_files_with_word(convo_id, "sys")
+
+    if file_num_sys == 0:
+
+        topic = db.execute("SELECT topic FROM conversations WHERE convo_id = ?", convo_id)[0]['topic']
+        language = db.execute("SELECT language FROM conversations WHERE convo_id = ?", convo_id)[0]['language']
+
+        conversation = [
+            {"role": "system", "content": "You are a foreign language teacher, having a conversation with a beginner in " + language + ". You must try to ask questions as much as possible and only speeak in " + language + ". You must stick to the topic as much as possible."},
+            {"role": "user", "content": "We will have a conversation about " + topic + " in " + language + ". Please start the conversation and restrict it to one line. Give the entirety of the response and this conversation in " + language + "."}
+        ]
+
+        transcript = chatGPT_answer(conversation, file_num_sys, convo_id)
+
+        conversation.append({"role": "system", "content": transcript})
+
+        session['conversation'] = conversation
+
+    return render_template("conversation.html", user=user, convo_id=convo_id)
+
+
+@app.route("/file", methods=["POST"])
+@login_required
+def file():
+
+    audio_file = request.files['audio']
+
+    convo_id = session['convo_id'][0]['convo_id']
+    conversation = session['conversation']
+    language = db.execute("SELECT language FROM conversations WHERE convo_id = ?", convo_id)[0]['language']
+
+
+    file_num_user = count_files_with_word(convo_id, "user")
+    file_num_sys = count_files_with_word(convo_id, "sys")
+
+    folder_path = './audio_recordings/conversation_' + str(convo_id)
+    file_name_wav = 'user_' + str(file_num_user) + '.wav'
+    file_name_mp3 = 'user_' + str(file_num_user) + '.mp3'
+    file_path_wav = os.path.join(folder_path, file_name_wav)
+    file_path_mp3 = os.path.join(folder_path, file_name_mp3)
+
+    try:
+        # Create the folder structure if it doesn't exist
+        os.makedirs(folder_path, exist_ok=True)
+        
+        audio_file.save(file_path_wav)
+        
+        ffmpeg.input(file_path_wav).output(file_path_mp3).run()
+
+        transcript = speech_to_text(file_path_mp3, language)
+
+        conversation.append({"role": "user", "content": transcript})
+
+        os.remove(file_path_wav)
+
+        transcript = chatGPT_answer(conversation, file_num_sys, convo_id)
+
+        conversation.append({"role": "system", "content": transcript})
+
+        session['conversation'] = conversation
+
+        return jsonify({'status': 'success', 'message': 'Audio file uploaded successfully'})
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+
+@app.route("/end", methods=["POST"])
+@login_required
+def end():
+
+    convo_id = session['convo_id'][0]['convo_id']
+    duration = total_audio_duration(convo_id)
+
+    db.execute("UPDATE conversations SET length = ? WHERE convo_id = ?", duration, convo_id)
+
+    merge_audio_files(convo_id)
+    clear_recordings(convo_id)
+
+    conversation = session['conversation']
+
+    create_transcript(conversation, convo_id)
+
+    flash("Recording Saved!")
+
+    return jsonify({'status': 'success', 'message': 'Conversation finished successfully'})
+
+
+@app.route('/audio_recordings/<int:convo_id>/<path:filename>')
+@login_required
+def access_files(convo_id, filename):
+
+    folder_path = f'audio_recordings/conversation_{convo_id}'
+
+    return send_from_directory(app.root_path, f'{folder_path}/{filename}')
 
 
 @app.route("/about")
@@ -232,8 +386,6 @@ def settings():
 
     generated = user['auto_generated']
 
-    print("generated", generated)
-
     if request.method == "POST":
 
         error = None
@@ -242,16 +394,12 @@ def settings():
         new_username = request.form.get("username")
         new_email = request.form.get("email")
         display = request.form.get("display")
-
-        print(display)
        
         if generated:
             set_password = request.form.get("set-password")
         else:
             new_password = request.form.get("new-password")
             current_password = request.form.get("current-password")
-
-        print(user['id'], new_username, new_email)
 
         existing_usernames = db.execute("SELECT * FROM users WHERE username = ? AND NOT id = ?", new_username, user['id'])
         existing_emails = db.execute("SELECT * FROM users WHERE email = ? AND NOT id = ?", new_email, user['id'])
@@ -289,10 +437,6 @@ def settings():
             elif not check_password_hash(hash, current_password):
                 error = "Current password incorrect!"
                 return render_template("settings.html",  user=user, error=error)
-
-            # elif len(new_password) < 4 or len(new_password) > 15 and display == "flex":
-            #     error = "Password must be between 4 and 15 characters long!"
-            #     return render_template("settings.html",  user=user, error=error)
 
             elif display == "flex":
 
@@ -408,15 +552,6 @@ def google_signin():
     except ValueError:
         print('Invalid token')
         return jsonify(success=False, error='Invalid token')
-    
-
-@app.route('/get_styling', methods=['POST'])
-def get_styling():
-
-    confirmation = request.json['displayProperty']
-    print("confirmation python: ", confirmation)
-
-    return jsonify(confirmation)
 
 
 if __name__ == "__main__":
