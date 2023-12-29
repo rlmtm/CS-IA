@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Conversation
+{% endblock %}
+
+{% block main %}
+    <h1>Conversation</h1>
+    <br>
+    <div class="horizontal-stack-w-tex">
+        <a>Welcome to the speaking practice. Press the button below to start recording and click again to end the recording. Please wait for a response to start recording again.</a>
+    </div>
+    
+    <div style="display: flex; flex-direction: column;">
+        <button class="fbtn btn-primary mx-auto msgSpace actionButton" type="submit" style="margin-top: 200px" id="actionButton">
+            <img id="recordImage" src="https://cdn-icons-png.flaticon.com/512/26/26312.png" height="100px" width="100px">
+        </button>
+    
+        <!-- <button id="actionButton">Record</button> -->
+        <audio style="display: none;" id="audioElement" controls></audio>
+        
+        <button class="fbtn btn-secondary mx-auto msgSpace endButton" type="submit" style="margin-top: 50px" id="endButton">
+            End
+        </button>
+    </div>
+
+    <script>
+        var convo_id = "{{ convo_id }}";
+        let counter = 2
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const actionButton = document.querySelector('.actionButton');
+            const endButton = document.querySelector('.endButton');
+            const audioElement = document.getElementById('audioElement');
+            let isRecording = false;
+            let audioChunks = [];
+
+            const handleDataAvailable = (event) => {
+                if (event.data.size > 0) {
+                    audioChunks.push(event.data);
+                }
+            };
+
+            const handleStop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                console.log(URL.createObjectURL(audioBlob))
+                audioElement.src = URL.createObjectURL(audioBlob);
+                audioChunks = [];
+
+                // Change the image back to the original after stopping recording
+                document.getElementById('recordImage').src = "https://cdn-icons-png.flaticon.com/512/26/26312.png";
+
+                const formData = new FormData();
+                formData.append('audio', audioBlob, `user_${counter}.wav`);
+
+                // Send the audio file to the Python backend
+                fetch('/file', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response from backend:', data);
+                })
+                .catch(error => {
+                    console.error('Error uploading audio:', error);
+                });
+            };
+
+            actionButton.addEventListener('click', () => {
+                if (!isRecording) {
+                    navigator.mediaDevices.getUserMedia({ audio: true })
+                        .then(stream => {
+                            const mediaRecorder = new MediaRecorder(stream);
+                            mediaRecorder.ondataavailable = handleDataAvailable;
+                            mediaRecorder.onstop = handleStop;
+
+                            mediaRecorder.start();
+                            isRecording = true;
+                            // Change the image to the recording image
+                            document.getElementById('recordImage').src = "https://static.thenounproject.com/png/1461154-200.png";
+
+                            actionButton.addEventListener('click', () => {
+                                mediaRecorder.stop();
+                                isRecording = false;
+                                // Change the image back to the original after stopping recording
+                                document.getElementById('recordImage').src = "https://cdn-icons-png.flaticon.com/512/26/26312.png";
+                            });
+                        })
+                        .catch(err => {
+                            console.error('Error accessing microphone:', err);
+                        });
+                }
+            });
+
+            endButton.addEventListener('click', function () {
+
+                fetch('/end', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response from server:', data);
+                    window.location.pathname = "/";
+                })
+                .catch(error => {
+                    console.error('Error making POST request:', error);
+                });
+            });
+        });
+    </script>
+{% endblock %}
