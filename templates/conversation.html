@@ -15,9 +15,12 @@
             <img id="recordImage" src="https://cdn-icons-png.flaticon.com/512/26/26312.png" height="100px" width="100px">
         </button>
         <audio style="display: none;" id="audioElement" controls></audio>
-        <button class="fbtn btn-secondary mx-auto msgSpace endButton" type="submit" style="margin-top: 50px" id="endButton">
+        <button class="fbtn btn-secondary mx-auto msgSpace endButton" type="submit" style="margin-top: 75px" id="endButton">
             End
         </button>
+        <div class="centered-load" id="loading" style="display:none; margin-top: 75px;">
+            <span class="loader"></span>
+        </div>
     </div>
     <script>
         var convo_id = "{{ convo_id }}";
@@ -45,7 +48,7 @@
                 document.getElementById('recordImage').src = "https://cdn-icons-png.flaticon.com/512/26/26312.png";
 
                 const formData = new FormData();
-                formData.append('audio', audioBlob, `user_${counter}.wav`);
+                formData.append('audio', audioBlob);
 
                 fetch('/file', {
                     method: 'POST',
@@ -86,6 +89,13 @@
                 }
             });
             endButton.addEventListener('click', function () {
+                var endButton = document.getElementById("endButton");
+                var loading = document.getElementById("loading");
+                var actionButton = document.getElementById("actionButton");
+
+                endButton.style.display = "none";
+                loading.style.display = "flex";
+                actionButton.disabled = true;
 
                 fetch('/end', {
                     method: 'POST',
