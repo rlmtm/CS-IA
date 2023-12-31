@@ -1,0 +1,5 @@
+System: Sure! How do you usually stay healthy?
+
+User: I go for regular runs, and do... Chunt for the Activators.
+
+System: That's great! How often do you go for runs and how long do you typically run for?

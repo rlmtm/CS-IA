@@ -1,0 +1,18 @@
+System: Sure, let's start the conversation about transport. What is your favorite mode of transportation and why?
+
+User: My favorite mode of transportation is an airplane.
+
+System: That's interesting! Have you ever been on an airplane before?
+
+User: Yes, of course.
+
+System: That's great! Where did you go on your last airplane trip?
+
+User: to the U.S.
+
+System: That sounds exciting! What was your reason for traveling to the U.S.?
+
+User: visiting colleges.
+
+System: That's wonderful! Did you enjoy your visit to the colleges in the U.S.?
+

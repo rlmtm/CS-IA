@@ -1,0 +1,14 @@
+System: Sure, let's start the conversation about drinks! What is your favorite drink?
+
+User: My favorite drink is water.
+
+System: That's great to hear! Do you prefer your water cold or at room temperature?
+
+User: I would say cold.
+
+System: Nice choice! Do you ever drink flavored water, like with lemon or berries?
+
+User: Yeah, sometimes I like drinking flavoured water with lemon or orange.
+
+System: That sounds refreshing! Have you ever tried adding cucumber or mint to your flavored water?
+

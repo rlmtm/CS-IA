@@ -1,0 +1,14 @@
+System: Sure! What is your favorite type of food?
+
+User: I would have to say Indian food.
+
+System: That's great! What specifically do you like about Indian food?
+
+User: the rich spices, the diversity, and the lots of taste.
+
+System: That sounds delicious! Have you ever tried cooking Indian food yourself?
+
+User: No, I'm not very skilled as a chef.
+
+System: That's okay! Cooking takes practice. Would you be interested in learning some simple Indian recipes in the future?
+
