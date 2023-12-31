@@ -17,6 +17,9 @@ from helpers import login_required, before_first_request, run_sql, check_for_sql
 from google.oauth2 import id_token
 from google.auth.transport import requests
 
+# AudioSegment.converter = 'c:\\ffmpeg\\bin\\ffmpeg.exe'
+# AudioSegment.ffmpeg =  'c:\\ffmpeg\\bin\\ffmpeg.exe'
+# AudioSegment.ffprobe =  'c:\\ffmpeg\\bin\\ffprobe.exe'
 
 # From CS50 Module - (Configure application)
 app = Flask(__name__)
@@ -192,11 +195,20 @@ def home():
     user_id = session["user_id"]
     user = db.execute("SELECT * FROM users WHERE id = ?;", user_id)[0]
 
+    conversation_count = db.execute("SELECT COUNT(topic) FROM conversations;")[0]['COUNT(topic)']
+
     conversations = db.execute("SELECT * FROM conversations WHERE user_id = ? ORDER BY date DESC", user_id)
 
     conversations = [conversation for conversation in conversations]
 
-    return render_template("home.html", user=user, conversations=conversations)
+    folder = './audio_recordings'
+    if not os.path.isdir(folder):
+        os.mkdir(folder)
+        print("Folder created.")
+    else:
+        print("Folder exists.")
+
+    return render_template("home.html", user=user, conversations=conversations, conversation_count=conversation_count)
 
 
 @app.route("/new", methods=["GET", "POST"])
