@@ -368,7 +368,7 @@ def remove_folder(directory_path):
 def create_deleted_file(convo_id):
     # Specify the file path
     directory_path = 'audio_recordings/conversation_'+str(convo_id)
-    file_path = os.path.join(directory_path, "Deleted.txt")
+    file_path = os.path.join(directory_path, "deleted.txt")
 
     # Content to be written to the file
     content = "Transcript has been deleted by the user."
