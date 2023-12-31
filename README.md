@@ -14,3 +14,6 @@ TODOS:
       Use chatGPT API to suggest ways to practice their weaknesses
       Give a detailed report with comments underneath the transcript (downloadable)
 4. (? Maybe ?) Page for suggesting studying schedule for revising
+
+*Install ffmpeg-python module NOT ffmpeg or python-ffmpeg*
+*Install ffmpeg from website AND set path*
