@@ -29,7 +29,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th style="width: 84.78px">Topic</th>
+                    <th style="width: 84.78px;">Topic</th>
                     <th style="width: 101.21px;">Language</th>
                     <th style="width: 186.58px;">Date</th>
                     <th style="width: 77.27px;">Length</th>
@@ -40,9 +40,9 @@
             </thead>
         </table>
     </div>
-    <div class="table-center" style="height: 486px; overflow-y: auto; padding-right: 10px; margin-right: -10px">
+    <div class="table-center" style="max-height: 486px;" id="tableBody">
         <table class="table">
-            <tbody class="table-body">
+            <tbody class="table-body" style=" overflow-y: auto; ">
                 {% for conversation in conversations %}
                     <tr>
                         <td style="width: 84.78px"> {{ conversation["topic"] | capitalize }} </td>
@@ -72,6 +72,14 @@
         </table>
     </div>
     <script>
+        var conversation_count = "{{ conversation_count }}";
+        var tableBody = document.getElementById("tableBody");
+        if (conversation_count > 6) {
+            tableBody.style.marginRight = "-15px";
+        } else if (count < 6) {
+            conversation_count.style.marginRight = "0px";
+        }
+        console.log(conversation_count);
         function add() {
             location.href = window.location.href.substring(0, window.location.href.lastIndexOf('/'))+"/new";
         }
