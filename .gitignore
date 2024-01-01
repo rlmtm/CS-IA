@@ -1,2 +1,2 @@
-.env
-api.json
+static/.env
+static/api.json
