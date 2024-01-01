@@ -329,3 +329,8 @@ th, td {
     line-height: 2.5;
     text-align: justify;
 }
+
+.text-steps {
+    line-height: 1.2;
+    text-align: justify;
+}
