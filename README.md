@@ -2,10 +2,7 @@
 
 TODOS:
 1. Finish help/about page
-      Explain purpose of app
-      Explain motivation behind app
       Explain flow of app
-      Outline all functionalities
 2. Fix scrollbar location and styling
       Add scrollbar inside table body element on right side
       Change look of scrollbar (colour, width, shape)
