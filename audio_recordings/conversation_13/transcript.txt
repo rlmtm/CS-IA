@@ -1,0 +1,14 @@
+System: Sure! Thank you for joining me. So, what do you know about trees?
+
+User: I know about oak cedar trees.
+
+System: That's great! What specifically do you know about oak cedar trees?
+
+User: Now brush
+
+System: I see. Are you referring to the brush that is found near oak cedar trees?
+
+User: Now, please tell me about oak and cedar trees.
+
+System: Oak trees are tall and strong, often found in temperate regions, while cedar trees are known for their fragrant wood and are commonly found in areas with a Mediterranean climate.
+
