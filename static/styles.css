@@ -312,3 +312,10 @@ th, td {
     max-height: 400px;
     overflow-y: auto;
 }
+
+.text-block {
+    width: 50em;
+    max-width: 50em;
+    line-height: 2.5;
+    text-align: justify;
+}
