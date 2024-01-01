@@ -72,12 +72,17 @@
         </table>
     </div>
     <script>
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        console.log(w, h)
         var conversation_count = "{{ conversation_count }}";
         var tableBody = document.getElementById("tableBody");
-        if (conversation_count > 6) {
-            tableBody.style.marginRight = "-15px";
-        } else if (count < 6) {
-            conversation_count.style.marginRight = "0px";
+        if (w == 2560) {
+            if (conversation_count > 6) {
+                tableBody.style.marginRight = "-15px";
+            } else if (count < 6) {
+                conversation_count.style.marginRight = "0px";
+            }
         }
         console.log(conversation_count);
         function add() {
