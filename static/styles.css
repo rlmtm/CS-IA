@@ -239,6 +239,10 @@ nav {
     align-items: center;
 }
 
+.horizontal-stack-inner-about {
+    display: flex;
+    justify-content: center;
+}
 
 .button-style {
     text-decoration: none;
@@ -314,8 +318,16 @@ th, td {
 }
 
 .text-block {
-    width: 50em;
-    max-width: 50em;
+    width: 40em;
+    max-width: 40em;
+    line-height: 2.75;
+    text-align: justify;
+    font-size: 17px;
+}
+
+.text-line {
+    width: 80em;
+    max-width: 80em;
     line-height: 2.5;
     text-align: justify;
 }
