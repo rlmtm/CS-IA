@@ -17,9 +17,6 @@ from flask import redirect, session, request, current_app
 import os.path
 from sqlite3 import Error
 
-from google.oauth2 import id_token
-from google.auth.transport import requests
-
 
 def login_required(f):
     """Decorate routes to require login"""
@@ -119,24 +116,6 @@ def create_folder(convo_id):
     else:
         print(f"Folder '{new_folder_path}' already exists.")
 
-def count_files(convo_id):
-
-    path = './audio_recordings'
-
-    folder_name = 'conversation_'+str(convo_id)
-
-    folder_path = os.path.join(path, folder_name)
-
-    try:
-        files = os.listdir(folder_path)
-
-        files = [file for file in files if os.path.isfile(os.path.join(folder_path, file))]
-
-        return len(files)
-    except OSError as e:
-        print(f"Error counting files in directory {folder_path}: {e}")
-        return None
-
 def count_files_with_word(convo_id, word):
 
     path = './audio_recordings'
@@ -168,21 +147,10 @@ def play_audio(file):
 
     play(sound)
 
-def wav_to_mp3(src):
-
-    dst = src.split(".wav")[0] + ".mp3"
-
-    sound = AudioSegment.from_wav(src)
-    sound.export(dst, format="mp3")
-
-    print("Converted Successfully")
-
 def openai_cred():
 
-    with open('api.json', 'r') as file:
-        data = json.load(file)['key']
-
-    print(data)
+    with open('./static/cred.json', 'r') as file:
+        data = json.load(file)['apiKey']
 
     client = OpenAI(api_key=data)
 
@@ -231,7 +199,9 @@ def speech_to_text(path, language):
     return transcript
 
 def format_duration(seconds):
+
     minutes, seconds = divmod(seconds, 60)
+
     return f"{int(minutes):02d}:{int(seconds):02d}"
 
 def audio_duration(folder_path):
@@ -245,6 +215,7 @@ def audio_duration(folder_path):
         return None
 
 def total_audio_duration(convo_id):
+    
     durations = {}
 
     directory_path = 'audio_recordings/conversation_'+str(convo_id)
@@ -252,8 +223,6 @@ def total_audio_duration(convo_id):
     try:
         # Get the list of files in the directory
         files = os.listdir(directory_path)
-
-        print(files)
 
         # Filter only audio files (you may need to adjust this based on your file types)
         audio_files = [file for file in files if file.lower().endswith(('.mp3', '.wav'))]
@@ -284,8 +253,6 @@ def merge_audio_files(convo_id):
 
         # Sort the audio files in the correct order
         sorted_files = sorted(audio_files, key=lambda x: (int(x.split('_')[1].split('.')[0]), x))
-
-        print(sorted_files)
 
         # Initialize the combined audio segment
         combined_audio = AudioSegment.silent()
@@ -374,10 +341,36 @@ def create_deleted_file(convo_id):
     content = "Transcript has been deleted by the user."
 
     try:
-        # Open the file in write mode and write the content
         with open(file_path, "w") as file:
             file.write(content)
 
         print(f"File '{file_path}' created successfully.")
     except Exception as e:
         print(f"Failed to create file '{file_path}': {e}")
+
+def transcript_feedback(transcript, convo_id):
+
+    client = openai_cred()
+
+    seperator = "-----------------------------------------------------------------------------------------"
+
+    directory_path = "./audio_recordings/conversation_"+str(convo_id)+"/"
+    file_name = "transcript.txt"
+    output_file_path = directory_path+file_name
+
+    conversation = [
+        {"role": "system", "content": "You are a professional language teacher, who gives clear and concise feedback on writing."},
+        {"role": "user", "content": "You will give suggestions and improvements for the following sentences by the user in the specified language. Analyze grammar, word choice, sentence construction, relevance and flow. Only analyse the content with role user but look for context at the text from role system. Only reply with feedback, DO NOT include the transcript in the response. Give specific and general feedback on the user's sentences only." + str(transcript)}
+    ]
+
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=conversation
+    )
+
+    try:
+        with open(output_file_path, 'a') as file:
+            file.write(seperator+"\n\nFeedback:\n\n"+response.choices[0].message.content)        
+        print("Transcript updated with feedback!")
+    except Exception as e:
+        print("Failed to give feedback. "+str(e))
