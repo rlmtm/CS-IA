@@ -1,0 +1,29 @@
+System: Sure, let's start the conversation. How would you define a wave in physics?
+
+User: A disturbance in a medium that carries energy without a net movement of particles.
+
+System: That's correct! What are some examples of waves that you can think of in everyday life?
+
+User: Sound waves, light waves, gamma waves, radiation waves, waves in the ocean.
+
+System: Great examples! So, how are waves classified in terms of their motion?
+
+User: You tell me.
+
+System: Waves can be classified as transverse or longitudinal based on the direction of their motion. Transverse waves move perpendicular to the direction of the disturbance, while longitudinal waves move parallel to the direction of the disturbance.
+
+-----------------------------------------------------------------------------------------
+
+Feedback:
+
+- "A disturbance in a medium that carries energy without a net movement of particles."
+   - Good definition, clear and concise.
+
+- "Sound waves, light waves, gamma waves, radiation waves, waves in the ocean."
+   - Good examples, relevant to everyday life.
+
+- "You tell me."
+   - It would be better to provide an answer or attempt to answer the question asked.
+
+- "Waves can be classified as transverse or longitudinal based on the direction of their motion. Transverse waves move perpendicular to the direction of the disturbance, while longitudinal waves move parallel to the direction of the disturbance."
+   - Clear and accurate explanation of wave classification based on motion. Consider using more varied sentence structures for better flow.
