@@ -225,6 +225,19 @@ def new():
 
         topic = request.form.get("topicInput")
         language = request.form.get("languageSelect")
+        proficiency = request.form.get("proficiencySelect")
+
+        print("\n\n\n"+proficiency+"\n\n\n")
+
+        if proficiency == None or proficiency == "default":
+            proficiency = "person"
+            proficiency = " with a " + proficiency + " in "
+        else:
+            proficiency = " with a person of " + proficiency + " in "
+
+        print("\n\n\n"+proficiency+"\n\n\n")
+
+        session['proficiency'] = proficiency
 
         if not topic and not language:
             error = "Must fill all fields!"
@@ -286,9 +299,10 @@ def conversation():
 
         topic = db.execute("SELECT topic FROM conversations WHERE convo_id = ?", convo_id)[0]['topic']
         language = db.execute("SELECT language FROM conversations WHERE convo_id = ?", convo_id)[0]['language']
+        proficiency = session['proficiency']
 
         conversation = [
-            {"role": "system", "content": "You are a foreign language teacher, having a conversation with a beginner in " + language + ". You must try to ask questions as much as possible and only speeak in " + language + ". You must stick to the topic as much as possible."},
+            {"role": "system", "content": "You are a foreign language teacher, having a conversation" + proficiency + language + ". You must try to ask questions as much as possible and only speeak in " + language + ". You must stick to the topic as much as possible."},
             {"role": "user", "content": "We will have a conversation about " + topic + " in " + language + ". Please start the conversation and restrict it to one line. Give the entirety of the response and this conversation in " + language + "."}
         ]
 
