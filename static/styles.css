@@ -326,8 +326,6 @@ th, td {
 }
 
 .text-line {
-    width: 80em;
-    max-width: 80em;
     line-height: 2.5;
     text-align: justify;
 }
