@@ -38,7 +38,7 @@
         </div>
         <br>
         <select class="form-contro mx-auto w-fit" id="languageSelect" name="languageSelect">
-            <option disabled selected value="select" style="width: 100%;">--Select Language--</option>
+            <option disabled selected value="default" style="width: 100%;">-- Select Language --</option>
             <option value="Arabic">Arabic</option>
             <option value="Bengali">Bengali</option>
             <option value="Chinese">Chinese</option>
@@ -52,6 +52,16 @@
             <option value="Russian">Russian</option>
             <option value="Spanish">Spanish</option>
             <option value="Urdu">Urdu</option>
+        </select>
+        <br>
+        <select class="form-contro mx-auto w-fit" id="proficiencySelect" name="proficiencySelect">
+            <option selected value="default" style="width: 100%;">-- Select Proficiency [optional] --</option>
+            <option value="Elementary Proficiency">Elementary Proficiency</option>
+            <option value="Limited Working Proficiency">Limited Working Proficiency</option>
+            <option value="Professional Working Proficiency">Professional Working Proficiency</option>
+            <option value="Full Professional Working Proficiency">Full Professional Working Proficiency</option>
+            <option value="Native Proficiency">Native Proficiency</option>
+
         </select>
         <br>
         {% if error %}
