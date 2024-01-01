@@ -121,6 +121,7 @@
     max-height: 0px;
     overflow: hidden;
     transition: max-height 0.5s;
+    z-index: 1;
 }
 .sub-menu-wrap.open-menu {
     max-height: 400px;
