@@ -74,13 +74,14 @@
     <script>
         var w = window.innerWidth;
         var h = window.innerHeight;
-        console.log(w, h)
+        console.log(w, h);
         var conversation_count = "{{ conversation_count }}";
         var tableBody = document.getElementById("tableBody");
         if (w == 2560) {
-            if (conversation_count > 6) {
-                tableBody.style.marginRight = "-15px";
-            } else if (count < 6) {
+            tableBody.style.maxHeight = '972px';
+            if (conversation_count > 12) {
+                tableBody.style.marginRight = "-12px";
+            } else if (conversation_count < 12) {
                 conversation_count.style.marginRight = "0px";
             }
         }
