@@ -1,18 +1,16 @@
 import os.path
 import requests
-import sqlite3
 import ffmpeg
+import json
 from iso639 import Lang
-from pydub import AudioSegment
 from datetime import datetime
 
 from cs50 import SQL
-from sqlite3 import Error
-from flask import Flask, flash, redirect, render_template, session, request, current_app, jsonify, url_for, send_from_directory
+from flask import Flask, flash, redirect, render_template, session, request, jsonify, send_from_directory
 from flask_session import Session
 
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import login_required, before_first_request, run_sql, check_for_sql, clear_session, generate_password, valid_email, create_folder, count_files, play_audio, wav_to_mp3, count_files_with_word, chatGPT_answer, speech_to_text, total_audio_duration, merge_audio_files, clear_recordings, create_transcript, remove_folder, create_deleted_file
+from helpers import login_required, before_first_request, check_for_sql, clear_session, generate_password, valid_email, create_folder, count_files_with_word, chatGPT_answer, speech_to_text, total_audio_duration, merge_audio_files, clear_recordings, create_transcript, remove_folder, create_deleted_file, transcript_feedback
 
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -227,15 +225,11 @@ def new():
         language = request.form.get("languageSelect")
         proficiency = request.form.get("proficiencySelect")
 
-        print("\n\n\n"+proficiency+"\n\n\n")
-
         if proficiency == None or proficiency == "default":
             proficiency = "person"
             proficiency = " with a " + proficiency + " in "
         else:
             proficiency = " with a person of " + proficiency + " in "
-
-        print("\n\n\n"+proficiency+"\n\n\n")
 
         session['proficiency'] = proficiency
 
@@ -376,6 +370,12 @@ def end():
     conversation = session['conversation']
 
     create_transcript(conversation, convo_id)
+
+    print(conversation)
+
+    conversation = conversation[2:]
+
+    transcript_feedback(conversation, convo_id)
 
     flash("Recording Saved!")
 
@@ -533,7 +533,10 @@ def settings():
 @app.route('/google-signin', methods=['POST'])
 def google_signin():
 
-    YOUR_CLIENT_ID = '434447398181-dte88c2s0pdun9rl3h5k942v6tgtj7ue.apps.googleusercontent.com'
+    with open('./static/cred.json', 'r') as file:
+        data = json.load(file)['clientID']
+        
+    YOUR_CLIENT_ID = data
 
     id_token_received = request.form['id_token']
 
