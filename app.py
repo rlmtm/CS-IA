@@ -193,7 +193,7 @@ def home():
     user_id = session["user_id"]
     user = db.execute("SELECT * FROM users WHERE id = ?;", user_id)[0]
 
-    conversation_count = db.execute("SELECT COUNT(topic) FROM conversations;")[0]['COUNT(topic)']
+    conversation_count = db.execute("SELECT COUNT(topic) FROM conversations WHERE user_id = ?;", user_id)[0]['COUNT(topic)']
 
     conversations = db.execute("SELECT * FROM conversations WHERE user_id = ? ORDER BY date DESC", user_id)
 
