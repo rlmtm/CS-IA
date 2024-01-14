@@ -15,15 +15,12 @@ from helpers import login_required, before_first_request, check_for_sql, clear_s
 from google.oauth2 import id_token
 from google.auth.transport import requests
 
-# AudioSegment.converter = 'c:\\ffmpeg\\bin\\ffmpeg.exe'
-# AudioSegment.ffmpeg =  'c:\\ffmpeg\\bin\\ffmpeg.exe'
-# AudioSegment.ffprobe =  'c:\\ffmpeg\\bin\\ffprobe.exe'
 
 # From CS50 Module - (Configure application)
 app = Flask(__name__)
 
 
-# From CS50 Module - (Configure session to use filesystem (instead of signed cookies)
+# From CS50 Module - (Configure session to use filesystem (instead of signed cookies) )
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
