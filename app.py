@@ -16,21 +16,17 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 
 
-# From CS50 Module - (Configure application)
 app = Flask(__name__)
 
 
-# From CS50 Module - (Configure session to use filesystem (instead of signed cookies) )
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 
-# From CS50 Module - (Configure CS50 Library to use SQLite database)
-db = SQL("sqlite:///storage.db")
+db = SQL("sqlite:///static/sql/database.db")
 
 
-# From CS50 Module
 @app.after_request
 def after_request(response):
     """Ensure responses aren't cached"""
