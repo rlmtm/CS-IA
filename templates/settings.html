@@ -63,10 +63,11 @@
             <input id="display" name="display" type="text" value="flex" style="display: none;">
         {% endif %}
         {% if error %}
-            <a id="badEvent">{{error}}</a>
+            <a id="badEvent" style="padding: 0 50px;">{{error}}</a>
         {% endif %}
         {% if success %}
-            <a id="goodEvent">{{success}}</a>
+            <br>
+            <a id="goodEvent" style="padding: 0 50px;">{{success}}</a>
         {% endif %}
         <button class="fbtn btn-primary mx-auto settingsButton msgSpace centered" type="submit" onclick="showAll()">Save</button>
     </form>
