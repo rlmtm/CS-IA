@@ -51,10 +51,10 @@ def before_first_request(f):
 def run_sql(sql_file):
     """Runs SQL Commands from SQL File"""
 
-    db = SQL("sqlite:///storage.db")
+    db = SQL("sqlite:///static/sql/database.db")
 
     try:
-        with open('./static/'+sql_file, 'r') as file:
+        with open('./static/sql/'+sql_file, 'r') as file:
             sql_commands = file.read().split(';')
         for command in sql_commands:
             if command.strip():
@@ -66,11 +66,11 @@ def run_sql(sql_file):
 def check_for_sql(app):
     """Runs SQL files if they have not been run before"""
 
-    db = SQL("sqlite:///storage.db")
+    db = SQL("sqlite:///static/sql/database.db")
 
     if not app.config.get("BEFORE_CHECK_EXECUTED"):
 
-        run_sql('framework.sql')
+        run_sql('schema.sql')
 
         return
 
