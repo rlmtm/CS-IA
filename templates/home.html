@@ -40,12 +40,13 @@
             </thead>
         </table>
     </div>
+    <h2 id="startText" style="margin-top: 15%;">Welcome to Fluent Flow! <br><br> Click the "New" Button in the top left to get started!</h2>
     <div class="table-center" style="max-height: 486px;" id="tableBody">
         <table class="table">
             <tbody class="table-body" style=" overflow-y: auto; ">
                 {% for conversation in conversations %}
                     <tr>
-                        <td style="width: 84.78px"> {{ conversation["topic"] | capitalize }} </td>
+                        <td style="width: 84.78px; max-width: 84.78px"> {{ conversation["topic"] | capitalize }} </td>
                         <td style="width: 101.21px;"> {{ conversation["language"] }} </td>
                         <td style="width: 186.58px;"> {{ conversation["date"] }} </td>
                         <td style="width: 77.27px;"> {{ conversation["length"] }} </td>
@@ -74,18 +75,22 @@
     <script>
         var w = window.innerWidth;
         var h = window.innerHeight;
-        console.log(w, h);
         var conversation_count = "{{ conversation_count }}";
         var tableBody = document.getElementById("tableBody");
+        var startText = document.getElementById("startText");
         if (w == 2560) {
             tableBody.style.maxHeight = '972px';
             if (conversation_count > 12) {
                 tableBody.style.marginRight = "-12px";
             } else if (conversation_count < 12) {
-                conversation_count.style.marginRight = "0px";
+                tableBody.style.marginRight = "0px";
             }
         }
-        console.log(conversation_count);
+        if (conversation_count == 0) {
+            tableBody.style.display = 'none'
+        } else {
+            startText.style.display = 'none'
+        }
         function add() {
             location.href = window.location.href.substring(0, window.location.href.lastIndexOf('/'))+"/new";
         }
