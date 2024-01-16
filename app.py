@@ -192,6 +192,13 @@ def home():
 
     conversations = [conversation for conversation in conversations]
 
+    unfinished = db.execute("SELECT convo_id FROM conversations WHERE (user_id = ? AND length = 0)", user_id)
+    unfinished_id = []
+    for conversation in unfinished:
+
+        convo_id = conversation['convo_id']
+        unfinished_id.append(convo_id)
+    
     folder = './audio_recordings'
     if not os.path.isdir(folder):
         os.mkdir(folder)
@@ -199,7 +206,7 @@ def home():
     else:
         print("Folder exists.")
 
-    return render_template("home.html", user=user, conversations=conversations, conversation_count=conversation_count)
+    return render_template("home.html", user=user, conversations=conversations, conversation_count=conversation_count, unfinished_id=unfinished_id)
 
 
 @app.route("/new", methods=["GET", "POST"])
