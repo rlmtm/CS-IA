@@ -75,6 +75,7 @@
     <script>
         var w = window.innerWidth;
         var h = window.innerHeight;
+        var unfinished_id = JSON.parse("{{ unfinished_id }}");
         var conversation_count = "{{ conversation_count }}";
         var tableBody = document.getElementById("tableBody");
         var startText = document.getElementById("startText");
@@ -90,6 +91,9 @@
             tableBody.style.display = 'none'
         } else {
             startText.style.display = 'none'
+        }
+        for (var id = 0; id < unfinished_id.length; id++) {
+            removeConversation(unfinished_id[id])
         }
         function add() {
             location.href = window.location.href.substring(0, window.location.href.lastIndexOf('/'))+"/new";
