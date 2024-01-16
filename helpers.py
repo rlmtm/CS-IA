@@ -125,10 +125,9 @@ def count_files_with_word(convo_id, word):
     folder_path = os.path.join(path, folder_name)
 
     try:
-        # Get the list of files in the directory
+
         files = os.listdir(folder_path)
 
-        # Count the files with the specified word in their name
         count = sum(1 for file in files if word in file)
 
         return count
@@ -221,15 +220,13 @@ def total_audio_duration(convo_id):
     directory_path = 'audio_recordings/conversation_'+str(convo_id)
 
     try:
-        # Get the list of files in the directory
+
         files = os.listdir(directory_path)
 
-        # Filter only audio files (you may need to adjust this based on your file types)
         audio_files = [file for file in files if file.lower().endswith(('.mp3', '.wav'))]
 
         total_duration = 0
 
-        # Get the duration for each audio file
         for audio_file in audio_files:
             file_path = os.path.join(directory_path, audio_file)
             duration = audio_duration(file_path)
@@ -248,22 +245,19 @@ def merge_audio_files(convo_id):
     output_path = directory_path+"recording.mp3"
 
     try:
-        # Get the list of audio files in the directory
+
         audio_files = [file for file in os.listdir(directory_path) if file.lower().endswith('.mp3')]
 
-        # Sort the audio files in the correct order
         sorted_files = sorted(audio_files, key=lambda x: (int(x.split('_')[1].split('.')[0]), x))
 
-        # Initialize the combined audio segment
         combined_audio = AudioSegment.silent()
 
-        # Concatenate the audio files
         for audio_file in sorted_files:
             file_path = os.path.join(directory_path, audio_file)
             segment = AudioSegment.from_mp3(file_path)
             combined_audio += segment
 
-        # Export the combined audio to an output file
+
         combined_audio.export(output_path, format="mp3")
 
         print(f"Audio files merged and saved to {output_path}")
@@ -276,10 +270,10 @@ def clear_recordings(convo_id):
     file_name = "recording.mp3"
 
     try:
-        # Get the list of files in the directory
+
         files_to_delete = [file for file in os.listdir(directory_path) if file != file_name]
 
-        # Delete each file in the list
+
         for file in files_to_delete:
             file_path = os.path.join(directory_path, file)
             if os.path.isfile(file_path):
@@ -310,9 +304,9 @@ def create_transcript(conversation, convo_id):
                     script_file.write(f'{role.capitalize()}: {content}\n')
 
 def remove_folder(directory_path):
-    # Check if the directory exists
+
     if os.path.exists(directory_path):
-        # Remove files in the directory
+
         for filename in os.listdir(directory_path):
             file_path = os.path.join(directory_path, filename)
             try:
@@ -323,7 +317,6 @@ def remove_folder(directory_path):
             except Exception as e:
                 print(f"Failed to remove {file_path}: {e}")
 
-        # Remove the directory itself
         try:
             os.rmdir(directory_path)
             print(f"Directory {directory_path} removed successfully.")
@@ -333,11 +326,9 @@ def remove_folder(directory_path):
         print(f"Directory {directory_path} does not exist.")
 
 def create_deleted_file(convo_id):
-    # Specify the file path
     directory_path = 'audio_recordings/conversation_'+str(convo_id)
     file_path = os.path.join(directory_path, "deleted.txt")
 
-    # Content to be written to the file
     content = "Transcript has been deleted by the user."
 
     try:
