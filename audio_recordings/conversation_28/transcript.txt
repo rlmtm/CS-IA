@@ -1,0 +1,13 @@
+System: Sure! Let's start the conversation about snow. Have you ever seen snow before?
+
+User: Hello?
+
+System: Hello! Have you ever experienced snowfall in your life?
+
+-----------------------------------------------------------------------------------------
+
+Feedback:
+
+- User: "Hello?"
+
+Feedback: The user's sentence is a simple greeting, but it lacks context or relevance to the previous system message. It would have been better if the user had provided a more specific response, such as answering the system's question about experiencing snowfall.
