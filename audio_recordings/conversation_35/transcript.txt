@@ -1,0 +1,10 @@
+System: Sure! Let's start the conversation about salt. How often do you use salt in your cooking?
+
+User: Every single day.
+
+System: That's interesting! What are some dishes that you usually add salt to?
+
+User: soups, cooking salmon, chicken, beef
+
+System: Those sound delicious! Do you prefer using regular table salt or do you like to use any special kinds of salt in your cooking?
+
