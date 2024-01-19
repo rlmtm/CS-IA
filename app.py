@@ -324,24 +324,24 @@ def file():
     file_num_sys = count_files_with_word(convo_id, "sys")
 
     folder_path = './audio_recordings/conversation_' + str(convo_id)
-    file_name_wav = 'user_' + str(file_num_user) + '.wav'
-    file_name_mp3 = 'user_' + str(file_num_user) + '.mp3'
-    file_path_wav = os.path.join(folder_path, file_name_wav)
-    file_path_mp3 = os.path.join(folder_path, file_name_mp3)
+    file_name_raw = 'raw_' + str(file_num_user)+'.mp3'
+    file_name = 'user_' + str(file_num_user)+'.mp3'
+    file_path_raw = os.path.join(folder_path, file_name_raw)
+    file_path = os.path.join(folder_path, file_name)
 
     try:
-        # Create the folder structure if it doesn't exist
+
         os.makedirs(folder_path, exist_ok=True)
         
-        audio_file.save(file_path_wav)
+        audio_file.save(file_path_raw)
         
-        ffmpeg.input(file_path_wav).output(file_path_mp3).run()
+        ffmpeg.input(file_path_raw).output(file_path).run()
 
-        transcript = speech_to_text(file_path_mp3, language)
+        transcript = speech_to_text(file_path, language)
 
         conversation.append({"role": "user", "content": transcript})
 
-        os.remove(file_path_wav)
+        os.remove(file_path_raw)
 
         transcript = chatGPT_answer(conversation, file_num_sys, convo_id)
 
@@ -541,15 +541,13 @@ def google_signin():
     id_token_received = request.form['id_token']
 
     try:
-        # Verify the id_token
+
         idinfo = id_token.verify_oauth2_token(id_token_received, requests.Request(), YOUR_CLIENT_ID)
 
-        # Extract user information
         user_id = idinfo['sub']
         user_name = idinfo['name']
         user_email = idinfo['email']
 
-        # Search for users with email
         email_count = db.execute("SELECT COUNT(email) FROM users WHERE email = ?;", user_email)
         email_count = email_count[0]["COUNT(email)"]
 
