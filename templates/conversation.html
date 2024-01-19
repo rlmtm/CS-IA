@@ -39,7 +39,7 @@
             };
 
             const handleStop = () => {
-                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
                 console.log(URL.createObjectURL(audioBlob))
                 audioElement.src = URL.createObjectURL(audioBlob);
                 audioChunks = [];
