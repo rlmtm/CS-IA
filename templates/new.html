@@ -18,7 +18,7 @@
             </div>
         </button>
         <div class="horizontal-stack-center">
-            <h1>Create conversation</h1>
+            <h1 id="pageTitle">Create</h1>
         </div>
         <button class="fbtn btn-primary menu-button button-style" onclick="edit()" style="visibility: hidden;">
             <div class="horizontal-stack-inner">
@@ -32,8 +32,9 @@
         <a>Please select the topic and language of discussion.</a>
     </div>
     <form action="/new" method="post" class="centered" style="width: 80%;">
+        <br>
         <div class="w-fit horizontal-stack centered" id="topic">
-            <h2 style="width: fit-content; text-align: left!important; font-size: 30px; margin-right: 20px;">Topic: </h2>
+            <h2 id="topicTitle" style="display: none; width: fit-content; text-align: left!important; font-size: 30px; margin-right: 20px;">Topic: </h2>
             <input autocomplete="off" autofocus class="form-control mx-auto w-fit" type="text" minlength="4" maxlength="50" id="topicInput" name="topicInput" placeholder="Enter a topic..." style="width:-webkit-fill-available">
         </div>
         <br>
@@ -71,6 +72,14 @@
         <button class="fbtn btn-primary mx-auto msgSpace loginButton" type="submit">Start</button>
     </form>
     <script>
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        var topicTitle = document.getElementById("topicTitle");
+        var pageTitle = document.getElementById("pageTitle");
+        if (w > 800) {
+            topicTitle.style.display = 'flex'
+            pageTitle.innerText = 'Create Conversation'
+        }
         function back() {
             window.location.pathname = "/";
         }

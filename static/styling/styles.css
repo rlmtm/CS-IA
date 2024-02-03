@@ -13,6 +13,7 @@
 }
 
 .loginButton {
+    min-width: 55px;
     height: 38px;
     width: 84.46%;
     border-radius: 5px;

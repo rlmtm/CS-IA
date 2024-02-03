@@ -21,11 +21,11 @@
                     <h1 class="navbar-brand" href="/" style="margin-left: 5px;">Fluent Flow</h1>
                 </a>
                 {% if session["user_id"] %}
-                    <ul class="nav navbar-nav">
+                    <ul class="nav navbar-nav" id="navTitle" style="display: none;">
                         <li class="nav-item {% if request.path == '/' %}active{% endif %}" style="margin-right: 200px;"><a id="p1" class="nav-link" href="/#">Home</a></li>
                     </ul>
 
-                    <div class="profile-icon" style="margin-right: 10px;" onclick="toggleMenu()">
+                    <div class="profile-icon style="margin-right: 10px;" onclick="toggleMenu()">
                         <img src="https://cdn-icons-png.flaticon.com/512/6522/6522516.png" alt="" width="60" height="60" style="margin-top: -5px; margin-left: -5px">
                     </div>
 
@@ -80,10 +80,26 @@
             </div>
         {% endif %}
     <script>
-        let subMenu = document.getElementById("subMenu")
+        // Element resizing
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        var navTitle = document.getElementById("navTitle");
+        if (w > 800) {
+            navTitle.style.display = 'flex'
+        }
+
+        // Drop-down menu functionality
+        var subMenu = document.getElementById('subMenu');
+        var profileIcon = document.querySelector('.profile-icon');
         function toggleMenu() {
             subMenu.classList.toggle("open-menu")
         }
+        function closeMenuOnClickOutside(event) {
+            if (!subMenu.contains(event.target) && !profileIcon.contains(event.target) && subMenu.classList.contains('open-menu') == true) {
+                subMenu.classList.toggle("open-menu")
+            }
+        }
+        document.addEventListener('click', closeMenuOnClickOutside);
     </script>
     </body>
 </html>
