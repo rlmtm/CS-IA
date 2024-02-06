@@ -1,0 +1,11 @@
+System: Have you ever had the opportunity to witness the northern lights?
+
+User: I don't really know much about the Northern Lights. Please explain to me how this phenomenon happens.
+
+System: Sure, I'd be happy to explain! The Northern Lights, also known as Aurora Borealis, occur when charged particles from the sun collide with the Earth's atmosphere, creating colorful lights in the sky. Would you like me to go into more detail?
+
+-----------------------------------------------------------------------------------------
+
+Feedback:
+
+Sure, I'd be happy to explain! The Northern Lights, also known as Aurora Borealis, occur when charged particles from the sun collide with the Earth's atmosphere, creating colorful lights in the sky. Would you like me to go into more detail?

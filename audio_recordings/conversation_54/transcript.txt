@@ -1,0 +1,18 @@
+System: Guten Tag! Wie kann ich Ihnen heute helfen?
+
+User: Ich würde gerne ein alkoholfreies Weißbier bestellen, aber ich bin mir nicht sicher, was ich als Vorspeise bestellen soll. Könnten Sie mir bitte helfen?
+
+System: Natürlich, gerne! Was sind Ihre Vorlieben in Bezug auf Vorspeisen? Mögen Sie eher etwas Leichtes oder etwas Herzhaftes?
+
+-----------------------------------------------------------------------------------------
+
+Feedback:
+
+- "Ich würde gerne ein alkoholfreies Weißbier bestellen" -> Ich möchte gerne ein alkoholfreies Weißbier bestellen.
+Feedback: The sentence is grammatically correct, but "ich würde gerne" can be replaced with "ich möchte gerne" to make it more polite and courteous.
+
+- "aber ich bin mir nicht sicher, was ich als Vorspeise bestellen soll" -> aber ich bin unsicher, welche Vorspeise ich bestellen soll.
+Feedback: The sentence is slightly fragmented. It can be rephrased to make it flow better by using "ich bin unsicher" instead of "ich bin mir nicht sicher" and placing the question word "welche" at the beginning of the sentence.
+
+- "Könnten Sie mir bitte helfen?" -> Könnten Sie mir bitte behilflich sein?
+Feedback: The sentence is grammatically correct, but it can be rephrased slightly by using "behilflich sein" instead of "helfen" to make it more formal and polite.

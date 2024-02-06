@@ -1,0 +1,15 @@
+System: Guten Tag! Wie war Ihre letzte Reise?
+
+User: Meine letzte Reise war sehr aufregend und actionreich. Ich fahre zum Skifahren in den Alpen.
+
+System: Das klingt toll! Welches Skigebiet haben Sie besucht und wie waren die Schneeverhältnisse?
+
+-----------------------------------------------------------------------------------------
+
+Feedback:
+
+- The user has made a few grammar and word choice errors.
+- The sentence construction is generally fine, although there is room to improve flow and relevance.
+- The user has not mentioned which ski resort they visited or the snow conditions.
+
+Overall, the user's sentence could be improved by providing more specific information about their ski trip.
