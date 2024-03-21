@@ -71,12 +71,10 @@
                 if (!isRecording) {
                     navigator.mediaDevices.getUserMedia({ audio: true })
                         .then(stream => {
-                            // Create a new MediaRecorder instance with the stream from the microphone
                             const mediaRecorder = new MediaRecorder(stream);
                             mediaRecorder.ondataavailable = handleDataAvailable;
                             mediaRecorder.onstop = handleStop;
 
-                            // Start recording
                             mediaRecorder.start();
 
                             isRecording = true;
