@@ -146,6 +146,7 @@ def play_audio(file):
 
     play(sound)
 
+# Authenticates client variable with API Key
 def openai_cred():
 
     with open('./static/cred.json', 'r') as file:
@@ -155,12 +156,11 @@ def openai_cred():
 
     return client
 
+# Generates a response to the user based off the current conversation in both text and audio
 def chatGPT_answer(conversation, file_num_sys, convo_id):
 
     folder_path = 'audio_recordings/conversation_'+str(convo_id)
-
     file_name = "sys_"+str(file_num_sys)+".mp3"
-
     file_path = os.path.join(folder_path, file_name)
 
     client = openai_cred()

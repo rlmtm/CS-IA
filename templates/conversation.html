@@ -31,14 +31,17 @@
             const audioElement = document.getElementById('audioElement');
             let isRecording = false;
             let audioChunks = [];
-
+            
+           // Function to handle incoming data chunks from the media recorder
             const handleDataAvailable = (event) => {
                 if (event.data.size > 0) {
                     audioChunks.push(event.data);
                 }
             };
 
+            // Function to handle when recording is stopped
             const handleStop = () => {
+                // Create a blob from accumulated audio chunks
                 const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
                 console.log(URL.createObjectURL(audioBlob))
                 audioElement.src = URL.createObjectURL(audioBlob);
@@ -49,6 +52,7 @@
                 const formData = new FormData();
                 formData.append('audio', audioBlob);
 
+                // Send the audio blob to the server using a POST request
                 fetch('/file', {
                     method: 'POST',
                     body: formData,
@@ -62,19 +66,24 @@
                 });
             };
 
+            // Event listener for the action button (start/stop recording)
             actionButton.addEventListener('click', () => {
                 if (!isRecording) {
                     navigator.mediaDevices.getUserMedia({ audio: true })
                         .then(stream => {
+                            // Create a new MediaRecorder instance with the stream from the microphone
                             const mediaRecorder = new MediaRecorder(stream);
                             mediaRecorder.ondataavailable = handleDataAvailable;
                             mediaRecorder.onstop = handleStop;
 
+                            // Start recording
                             mediaRecorder.start();
+
                             isRecording = true;
 
                             document.getElementById('recordImage').src = "https://static.thenounproject.com/png/1461154-200.png";
 
+                            // Add event listener to stop recording when action button is clicked again
                             actionButton.addEventListener('click', () => {
                                 mediaRecorder.stop();
                                 isRecording = false;
@@ -87,6 +96,7 @@
                         });
                 }
             });
+
             endButton.addEventListener('click', function () {
                 var endButton = document.getElementById("endButton");
                 var loading = document.getElementById("loading");
