@@ -47,7 +47,7 @@ def before_first_request(f):
 
     return decorated_function
 
-
+# Runs SQL from file
 def run_sql(sql_file):
     """Runs SQL Commands from SQL File"""
 
@@ -62,7 +62,7 @@ def run_sql(sql_file):
     except Error as e:
         print(e)
 
-
+# Creates SQL structures if they don't exist
 def check_for_sql(app):
     """Runs SQL files if they have not been run before"""
 
@@ -76,7 +76,7 @@ def check_for_sql(app):
 
         app.config["BEFORE_CHECK_EXECUTED"] = True
 
-
+# Clears local flask sessions
 def clear_session(app):
     """Clears Session and redirects to login page"""
 
@@ -90,18 +90,18 @@ def clear_session(app):
 
         app.config["BEFORE_REQUEST_EXECUTED"] = True
 
-
+# Generates a random password
 def generate_password(length):
     characters = string.ascii_letters + string.digits + string.punctuation
     password = ''.join(secrets.choice(characters) for _ in range(length))
     return password
 
-
+#Checks for correct email regex
 def valid_email(email):
     emailRegex = r"^[^\s@]+@[^\s@]+\.[^\s@]+$"
     return re.match(emailRegex, email) is not None
 
-
+# Creates a conversation folder
 def create_folder(convo_id):
 
     path = './audio_recordings'
@@ -116,6 +116,7 @@ def create_folder(convo_id):
     else:
         print(f"Folder '{new_folder_path}' already exists.")
 
+# Counts the number of files with a specific word
 def count_files_with_word(convo_id, word):
 
     path = './audio_recordings'
@@ -135,6 +136,7 @@ def count_files_with_word(convo_id, word):
         print(f"Error counting files: {e}")
         return None
 
+# Plays the audio from an mp3 file
 def play_audio(file):
 
     format = file.split(".")[1]
@@ -182,6 +184,7 @@ def chatGPT_answer(conversation, file_num_sys, convo_id):
 
     return response.choices[0].message.content
 
+# Converts the user's spoken audio into text
 def speech_to_text(path, language):
 
     client = openai_cred()
@@ -197,12 +200,14 @@ def speech_to_text(path, language):
 
     return transcript
 
+# Converts the audio file duration from seconds to seconds and minutes
 def format_duration(seconds):
 
     minutes, seconds = divmod(seconds, 60)
 
     return f"{int(minutes):02d}:{int(seconds):02d}"
 
+# Gets the length of the audio file
 def audio_duration(folder_path):
 
     try:
@@ -213,6 +218,7 @@ def audio_duration(folder_path):
         print(f"Error getting audio duration: {e}")
         return None
 
+# Gets the total audio duration of all audio files
 def total_audio_duration(convo_id):
     
     durations = {}
@@ -239,6 +245,7 @@ def total_audio_duration(convo_id):
         print(f"Error getting audio durations in {directory_path}: {e}")
         return None
 
+# Merges all the individual audio files for a conversation into a single audio file
 def merge_audio_files(convo_id):
 
     directory_path = "./audio_recordings/conversation_"+str(convo_id)+"/"
@@ -264,6 +271,7 @@ def merge_audio_files(convo_id):
     except Exception as e:
         print(f"Error merging audio files: {e}")
 
+# Deletes all individual audio files after creating a new merged audio file
 def clear_recordings(convo_id):
 
     directory_path = "./audio_recordings/conversation_"+str(convo_id)+"/"
@@ -286,6 +294,7 @@ def clear_recordings(convo_id):
     except Exception as e:
         print(f"Error deleting files: {e}")
 
+# Creates and formats transcript of the conversation
 def create_transcript(conversation, convo_id):
 
     directory_path = "./audio_recordings/conversation_"+str(convo_id)+"/"
@@ -303,6 +312,7 @@ def create_transcript(conversation, convo_id):
                 else:
                     script_file.write(f'{role.capitalize()}: {content}\n')
 
+# Removes a specified folder
 def remove_folder(directory_path):
 
     if os.path.exists(directory_path):
@@ -325,6 +335,7 @@ def remove_folder(directory_path):
     else:
         print(f"Directory {directory_path} does not exist.")
 
+# Creates a specified folder
 def create_deleted_file(convo_id):
     directory_path = 'audio_recordings/conversation_'+str(convo_id)
     file_path = os.path.join(directory_path, "deleted.txt")
@@ -339,6 +350,7 @@ def create_deleted_file(convo_id):
     except Exception as e:
         print(f"Failed to create file '{file_path}': {e}")
 
+# Adds feedback to the transcript
 def transcript_feedback(transcript, convo_id):
 
     client = openai_cred()
